@@ -10,15 +10,17 @@ Le plugin [CommandAPI](https://github.com/JorelAli/CommandAPI) est requis.
 
 ## Commandes
 
-- `/mt chat_admin`: Message à tous les admins.
-- `/mt fly`: Faire voler un joueur et changer la vitesse.
-- `/mt give`: Donner un item custom à un joueur. Les items peuvent être personnalisés dans `/plugins/MiniTools.give.yml`.
-- `/mt gravity`: Changer la gravité d'une entitée.
-- `/mt hidden`: Cacher un joueur à un autre joueur. Permet de cacher un joueur de façon permanente.
-- `/mt inventory` : Inventaire permanent pour conserver des items. 3 pages par défaut. Les pages sont partagées entre les joueurs.
-- `/mt reload`: Recharger le plugin.
-- `/mt vanish`: Cacher de masquer un joueur (le vrai vanish, pas l'effet de potion comme certains plugins...). Les items sont visibles.
-- `/mt whoami`: Afficher le nom de l'entitée.
-- `/mt world`: Changer de monde. (Téléporte au spawn du monde)
+| Commande         | Description                                                                                            |
+| ---------------- | ------------------------------------------------------------------------------------------------------ |
+| `/mt chat_admin` | Message à tous les admins.                                                                             |
+| `/mt fly`        | Faire voler un joueur et changer la vitesse.                                                           |
+| `/mt give`       | Donner un item custom à un joueur. Les items sont personnalisables dans `/plugins/MiniTools.give.yml`. |
+| `/mt gravity`    | Changer la gravité d'une entité.                                                                       |
+| `/mt hidden`     | Cacher un joueur à un autre joueur. Permet de cacher un joueur de façon permanente.                    |
+| `/mt inventory`  | Inventaires permanents pour conserver des items. Les pages sont les mêmes pour tous les joueurs.       |
+| `/mt reload`     | Recharger le plugin.                                                                                   |
+| `/mt vanish`     | Cacher de masquer un joueur. Utiliser `/mt hidden` pour masquer les items.                             |
+| `/mt whoami`     | Afficher le nom de l'entité.                                                                           |
+| `/mt world`      | Changer de monde. (Téléporte au spawn du monde)                                                        |
 
 Pour plus d'informations sur les commandes, l'autocomplétion vous guidera.
