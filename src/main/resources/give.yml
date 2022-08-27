@@ -1,0 +1,86 @@
+# This file contains every items available in the /mt give command.
+# This file will never be overwritten by MiniTools.
+# For one entry you can specify multiple items with.
+# For the items, you can use the following format, or use the ItemStack class (advanced; example bellow):
+
+# Available arguments for an item :
+# material (required)
+# amount (optional, default 1)
+# durability / damage (durability starts at 0, damage starts at full durability)
+# enchants (optional)
+# custom_model_data / CustomModelData (optional, default 0)
+# display_name / DisplayName (optional)
+# lore (optional)
+
+
+# Example:
+custom_give:
+  diamond_stuff:
+    permission: "minitools.give.diamond_stuff"
+    items:
+      - material: DIAMOND_SWORD
+        enchants:
+          sharpness: 5
+      - material: DIAMOND_HELMET
+        enchants:
+          protection: 5
+      - material: DIAMOND_CHESTPLATE
+        enchants:
+          protection: 5
+      - material: DIAMOND_LEGGINGS
+        enchants:
+          protection: 5
+      - material: DIAMOND_BOOTS
+        enchants:
+          protection: 5
+
+  example_stuff:
+    permission: "minitools.give.example_stuff"
+    items:
+      - material: DIAMOND_SWORD
+        amount: 2 # Can be up to 64 even for non-stackable items, if higher, it will be split into multiple stacks
+        durability: 100 # 100 points of durability remaining
+        enchants:
+          sharpness: 10
+          cruse_of_vanishing: 1
+        custom_model_data: 1
+        display_name: "MiniTools's Sword"
+        lore: "This sword is made by MiniTools\nIt is a sword made of diamonds\n"
+      - material: DIAMOND_CHESTPLATE
+        damage: 10 # 10 points of durability in less
+        enchants:
+          protection: 10
+          cursed_of_vanishing: 1
+        display_name: "MiniTools's Chestplate"
+        lore:
+          This chestplate is made by MiniTools
+          It is a chestplate made of diamonds
+
+  forbidden_stuff:
+    enabled: false # disable the whole forbidden_stuff section
+    permission: "mt.give.forbidden_stuff"
+    items:
+      - material: DIAMOND_SWORD
+        enchants:
+          sharpness: 100 # The enchantments are not limited
+        display_name: "The Forbidden Sword"
+      - ==: org.bukkit.inventory.ItemStack
+        v: 2586
+        type: DIAMOND_SWORD
+        amount: 2
+        meta:
+          ==: ItemMeta
+          meta-type: UNSPECIFIC
+          display-name: '{"extra":[{"text":"Sword loaded as an ItemStack"}],"text":""}'
+          enchants:
+            DAMAGE_ALL: 100 # (Sharpness)
+    effects:
+      - type: RESISTANCE
+        duration: 1200
+        amplifier: 100
+
+# The default permission for items without a permission entry.
+default_permission: "minitools.give.default"
+
+# Add vanilla items in the /mt give command.
+vanilla_give: false

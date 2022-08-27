@@ -1,0 +1,23 @@
+pages_default_count: 3
+special_menu_items:
+  empty:
+    material: LIGHT_GRAY_STAINED_GLASS_PANE
+    display_name: ' '
+  locked:
+    material: RED_WOOL
+    display_name: 'Verrouillé'
+  unlocked:
+    material: GREEN_WOOL
+    display_name: 'Déverrouillé'
+menu_items:
+  - material: PAPER
+    display_name: <- Page %page% <-
+  - material: EMPTY
+  - material: EMPTY
+  - material: EMPTY
+  - material: EMPTY
+  - material: EMPTY
+  - material: EMPTY
+  - material: EMPTY
+  - material: PAPER
+    display_name: -> Page %page% ->
