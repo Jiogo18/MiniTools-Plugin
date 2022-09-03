@@ -305,6 +305,16 @@ public class CommandGive extends Base {
 			}
 		}
 
+		if (custom_item.contains("commands") && custom_item.getList("commands") != null) {
+			List<String> commands = custom_item.getStringList("commands");
+			for (String command : commands) {
+				sender.performCommand(command
+							      .replace("%player%", sender.getName())
+							      .replace("%uuid%", sender.getUniqueId().toString())
+							      .replace("%playerDisplayName%", sender.getDisplayName()));
+			}
+		}
+
 		return 1;
 	}
 

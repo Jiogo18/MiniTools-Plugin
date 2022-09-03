@@ -78,6 +78,8 @@ custom_give:
       - type: RESISTANCE
         duration: 1200
         amplifier: 100
+    commands:
+      - 'tellraw @a {"text":"","extra":[{"text":"%playerDisplayName% has the forbidden stuff !","bold":true,"color":"dark_red"}]}'
 
 # The default permission for items without a permission entry.
 default_permission: "minitools.give.default"
