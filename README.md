@@ -12,7 +12,7 @@ Le plugin [CommandAPI](https://github.com/JorelAli/CommandAPI) est requis.
 
 | Commande         | Description                                                                                            |
 | ---------------- | ------------------------------------------------------------------------------------------------------ |
-| `/mt chat_admin` | Message à tous les admins.                                                                             |
+| `/mt admin_chat` | Message à tous les admins.                                                                             |
 | `/mt fly`        | Faire voler un joueur et changer la vitesse.                                                           |
 | `/mt give`       | Donner un item custom à un joueur. Les items sont personnalisables dans `/plugins/MiniTools.give.yml`. |
 | `/mt gravity`    | Changer la gravité d'une entité.                                                                       |

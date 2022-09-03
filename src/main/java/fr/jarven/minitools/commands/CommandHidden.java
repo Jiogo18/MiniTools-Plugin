@@ -66,7 +66,16 @@ public class CommandHidden extends Base {
 				for (Player playerWhoWillShowYou : playersToShow) {
 					playerWhoWillShowYou.showPlayer(Main.getInstance(), sender);
 				}
-			})));
+			})))
+			.then(executePlayerProxy(literal("info"), (proxy, args) -> {
+				Player player = (Player) proxy.getCallee();
+				boolean isVanish = player.isInvisible();
+				boolean isHidden = hiddenPlayers.contains(player.getUniqueId());
+				boolean isPermanentHidden = permanentHiddenPlayers.contains(player.getUniqueId());
+				proxy.sendMessage("Vanish: " + isVanish);
+				proxy.sendMessage("Hidden: " + isHidden);
+				proxy.sendMessage("Permanent hidden: " + isPermanentHidden);
+			}));
 	}
 
 	public static void hidePlayerToAll(Player playerToHide) {

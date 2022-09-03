@@ -19,7 +19,7 @@ public class MyCommands extends Base {
 	public static void registerMiniTools() {
 		String fullDescription = "Plugin MiniTools par Jarven"
 			+ "\nLes commandes sont utilisables avec /execute."
-			+ "\n - /mt chat_admin <message> : Message privé à tous les admins"
+			+ "\n - /mt admin_chat <message> : Message privé à tous les admins"
 			+ "\n - /mt fly : Commandes relatives au vol du joueur"
 			+ "\n - /mt give : Commande permettant de donner un item custom"
 			+ "\n - /mt gravity : Commande relatives à la gravité pour l'entitée"
@@ -64,6 +64,7 @@ public class MyCommands extends Base {
 	public static void reload() {
 		CommandGive.onLoad();
 		CommandInventory.onLoad();
+		CommandChatAdmin.onLoad();
 	}
 
 	public static void onDisable() {
