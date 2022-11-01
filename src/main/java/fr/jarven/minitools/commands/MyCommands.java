@@ -1,16 +1,7 @@
 package fr.jarven.minitools.commands;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Set;
-import java.util.stream.Collectors;
-
 import dev.jorel.commandapi.CommandAPI;
-import dev.jorel.commandapi.CommandAPIConfig;
 import dev.jorel.commandapi.CommandTree;
-import dev.jorel.commandapi.RegisteredCommand;
-import fr.jarven.minitools.Main;
 
 public class MyCommands extends Base {
 	private MyCommands() {
@@ -49,15 +40,7 @@ public class MyCommands extends Base {
 		reload();
 	}
 
-	public static void onLoad() {
-		if (!CommandAPI.isLoaded())
-			CommandAPI.onLoad(new CommandAPIConfig());
-	}
-
 	public static void onEnable() {
-		// Enable the CommandAPI
-		CommandAPI.onEnable(Main.getInstance());
-
 		registerMiniTools();
 	}
 
@@ -68,24 +51,8 @@ public class MyCommands extends Base {
 	}
 
 	public static void onDisable() {
-		CommandInventory.onDisable();
-
-		// CommandAPI.onDisable(); // This is bad when we have 2 plugins using CommandAPI
-		if (!CommandAPI.isLoaded()) {
-			Main.LOGGER.severe("CommandAPI is not loaded, cannot disable. You must restart your server. (This can happen if another plugin calls CommandAPI.onDisable())");
-		}
-		List<RegisteredCommand> commands = CommandAPI.getRegisteredCommands();
-		Set<String> commandsName = commands.stream().map(RegisteredCommand::commandName).collect(Collectors.toSet());
-		Set<String> commandsAndAliasesName = commands.stream().flatMap(c -> {
-									      List<String> list = new ArrayList<String>(Arrays.asList(c.aliases()));
-									      list.add(c.commandName());
-									      return list.stream();
-								      })
-							     .collect(Collectors.toSet());
-		int aliasesCount = commandsAndAliasesName.size() - commandsName.size();
-		Main.LOGGER.info("Unregistering " + commandsName.size() + " commands and " + aliasesCount + " aliases.");
-		for (String commandName : commandsAndAliasesName) {
-			CommandAPI.unregister(commandName);
-		}
+		CommandAPI.unregister("minitools");
+		CommandAPI.unregister("mt");
+		CommandAPI.unregister("ac");
 	}
 }

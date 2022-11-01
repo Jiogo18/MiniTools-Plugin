@@ -62,7 +62,7 @@ public class CommandChatAdmin extends Base {
 					 .stream()
 					 .filter(player -> player.hasPermission("minitools.admin_chat"))
 					 .map(player -> { player.spigot().sendMessage(message); return player; })
-					 .toList()
+					 .collect(java.util.stream.Collectors.toList())
 					 .size();
 		return sent_count;
 	}

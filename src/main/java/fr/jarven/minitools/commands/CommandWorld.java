@@ -21,8 +21,13 @@ public class CommandWorld extends Base {
 					})
 					.executesEntity((sender, args) -> {
 						World world = Bukkit.getWorld(args[0].toString());
+						if (world == null) {
+							sender.sendMessage("§cLe monde n'existe pas !");
+							return 0;
+						}
 						// Teleport the player to the spawn of the world
 						sender.teleport(world.getSpawnLocation());
+						return 1;
 					}))
 			.executes((sender, args) -> {
 				// Send the list of worlds
