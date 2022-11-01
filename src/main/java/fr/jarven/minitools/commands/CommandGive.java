@@ -26,7 +26,9 @@ import java.util.Set;
 import java.util.stream.Stream;
 
 import dev.jorel.commandapi.ArgumentTree;
+import dev.jorel.commandapi.arguments.ArgumentSuggestions;
 import dev.jorel.commandapi.arguments.StringArgument;
+import dev.jorel.commandapi.wrappers.NativeProxyCommandSender;
 import fr.jarven.minitools.Main;
 
 // Just a basic give with items stored in a config file
@@ -318,51 +320,71 @@ public class CommandGive extends Base {
 		return 1;
 	}
 
+	private static ArgumentSuggestions suggestItems = (info, builder) -> {
+		String current = info.currentArg().toLowerCase();
+		// Suggest items starting with the current argument
+		long nbAdded =
+			customItemNames
+				.stream()
+				.filter(item -> item.toLowerCase().startsWith(current))
+				.map(item -> builder.suggest(item))
+				.count();
+		if (vanillaItems) {
+			// Suggest items starting with the current argument
+			nbAdded +=
+				Stream.of(Material.values())
+					.filter(material -> material.name().toLowerCase().startsWith(current))
+					.map(material -> builder.suggest(material.name()))
+					.count();
+		}
+		if (nbAdded == 0) {
+			// Suggest items containing the current argument
+			customItemNames
+				.stream()
+				.filter(item -> item.toLowerCase().contains(current))
+				.forEach(item -> builder.suggest(item));
+			if (vanillaItems) {
+				// Suggest items containing the current argument
+				Stream.of(Material.values())
+					.filter(material -> material.name().toLowerCase().contains(current))
+					.forEach(material -> builder.suggest(material.name()));
+			}
+		}
+		return builder.buildFuture();
+	};
+
+	private static void executeWithPuppetPlayer(NativeProxyCommandSender proxy, Object[] args) {
+		Player puppet = (Player) proxy.getCallee();
+		boolean areCallerCalleeTheSame = areCallerCalleeTheSame(proxy);
+		String itemName = (String) args[0];
+		ConfigurationSection custom_item = getCustomItem(itemName);
+		if (custom_item == null) {
+			if (isVanillaItem(itemName)) {
+				giveVanillaItem(puppet, itemName);
+				if (!areCallerCalleeTheSame) {
+					proxy.sendMessage(puppet.getName() + " received " + itemName + ".");
+				}
+			} else {
+				proxy.sendMessage("§cThis item doesn't exist");
+			}
+			return;
+		}
+		if (!hasPermission(proxy, custom_item)) {
+			proxy.sendMessage("§cYou don't have the permission to give this item");
+		} else {
+			if (custom_item.contains("enabled") && !custom_item.getBoolean("enabled")) {
+				proxy.sendMessage("§cThis item is disabled");
+				return;
+			}
+			giveCustomItem(puppet, custom_item);
+			if (!areCallerCalleeTheSame) {
+				proxy.sendMessage(puppet.getName() + " received the custom item " + itemName + ".");
+			}
+		}
+	}
+
 	public static ArgumentTree getSubCommand() {
 		return literal("give")
-			.then(executePlayerProxy(
-				new StringArgument("item")
-					.includeSuggestions((info, builder) -> {
-						String current = info.currentArg().toLowerCase();
-						customItemNames
-							.stream()
-							.filter(item -> item.toLowerCase().startsWith(current))
-							.forEach(item -> builder.suggest(item));
-						if (vanillaItems) {
-							Stream.of(Material.values())
-								.filter(material -> material.name().toLowerCase().startsWith(current))
-								.forEach(material -> builder.suggest(material.name()));
-						}
-						return builder.buildFuture();
-					}),
-				(proxy, args) -> {
-					Player puppet = (Player) proxy.getCallee();
-					boolean areCallerCalleeTheSame = areCallerCalleeTheSame(proxy);
-					String itemName = (String) args[0];
-					ConfigurationSection custom_item = getCustomItem(itemName);
-					if (custom_item == null) {
-						if (isVanillaItem(itemName)) {
-							giveVanillaItem(puppet, itemName);
-							if (!areCallerCalleeTheSame) {
-								proxy.sendMessage(puppet.getName() + " received " + itemName + ".");
-							}
-						} else {
-							proxy.sendMessage("§cThis item doesn't exist");
-						}
-						return;
-					}
-					if (!hasPermission(proxy, custom_item)) {
-						proxy.sendMessage("§cYou don't have the permission to give this item");
-					} else {
-						if (custom_item.contains("enabled") && !custom_item.getBoolean("enabled")) {
-							proxy.sendMessage("§cThis item is disabled");
-							return;
-						}
-						giveCustomItem(puppet, custom_item);
-						if (!areCallerCalleeTheSame) {
-							proxy.sendMessage(puppet.getName() + " received the custom item " + itemName + ".");
-						}
-					}
-				}));
+			.then(executePlayerProxy(new StringArgument("item").includeSuggestions(suggestItems), CommandGive::executeWithPuppetPlayer));
 	}
 }

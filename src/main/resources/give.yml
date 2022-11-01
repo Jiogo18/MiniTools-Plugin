@@ -85,4 +85,4 @@ custom_give:
 default_permission: "minitools.give.default"
 
 # Add vanilla items in the /mt give command.
-vanilla_give: false
+vanilla_items: false

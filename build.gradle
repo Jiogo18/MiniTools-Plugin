@@ -33,7 +33,7 @@ dependencies {
 }
 
 group = 'fr.jarven'
-version = '1.0.1'
+version = '1.0.2'
 description = 'MiniTools'
 java.sourceCompatibility = JavaVersion.VERSION_1_8
 
