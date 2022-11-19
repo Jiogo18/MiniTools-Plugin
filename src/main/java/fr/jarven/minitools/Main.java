@@ -8,6 +8,7 @@ import java.util.logging.Logger;
 import fr.jarven.minitools.commands.MyCommands;
 import fr.jarven.minitools.listeners.CommandsListeners;
 import fr.jarven.minitools.listeners.InventoryListeners;
+import fr.jarven.minitools.listeners.SignListener;
 import fr.jarven.minitools.tasks.SaveTask;
 
 public class Main extends JavaPlugin {
@@ -24,6 +25,7 @@ public class Main extends JavaPlugin {
 	@Override
 	public void onEnable() {
 		MyCommands.onEnable();
+		getServer().getPluginManager().registerEvents(new SignListener(), this);
 		getServer().getPluginManager().registerEvents(new CommandsListeners(), this);
 		getServer().getPluginManager().registerEvents(new InventoryListeners(), this);
 		SaveTask.start();

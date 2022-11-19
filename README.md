@@ -4,7 +4,7 @@ Ce plugin a pour but de fournir des commandes simples pour les administrateurs.
 
 Les commandes sont disponibles sous `/minitools` ou `/mt` et sont réservées aux admins.
 
-Toutes les commandes sont compatibles avec `/excute` et sont autocomplétées.
+Toutes les commandes sont compatibles avec `/execute` et sont autocomplétées.
 
 Le plugin [CommandAPI](https://github.com/JorelAli/CommandAPI) est requis.
 
@@ -19,6 +19,7 @@ Le plugin [CommandAPI](https://github.com/JorelAli/CommandAPI) est requis.
 | `/mt hidden`     | Cacher un joueur à un autre joueur. Permet de cacher un joueur de façon permanente.                    |
 | `/mt inventory`  | Inventaires permanents pour conserver des items. Les pages sont les mêmes pour tous les joueurs.       |
 | `/mt reload`     | Recharger le plugin.                                                                                   |
+| `/mt sign`       | Édition de panneau.                                                                                    |
 | `/mt vanish`     | Cacher de masquer un joueur. Utiliser `/mt hidden` pour masquer les items.                             |
 | `/mt whoami`     | Afficher le nom de l'entité.                                                                           |
 | `/mt world`      | Changer de monde. (Téléporte au spawn du monde)                                                        |

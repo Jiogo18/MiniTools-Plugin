@@ -23,7 +23,7 @@ public class MyCommands extends Base {
 		new CommandTree("minitools")
 			.withAliases("mt")
 			.withHelp("Plugin MiniTools par Jarven", fullDescription + "\n§6Aliases : mt")
-			.withRequirement((sender) -> sender.hasPermission("minitools"))
+			.withRequirement((sender) -> sender.hasPermission("minitools.command"))
 			.then(CommandChatAdmin.getSubCommand())
 			.then(CommandFly.getSubCommand())
 			.then(CommandGive.getSubCommand())
@@ -34,6 +34,7 @@ public class MyCommands extends Base {
 			.then(CommandWhoAmI.getSubCommand())
 			.then(CommandWorld.getSubCommand())
 			.then(CommandInventory.getSubCommand())
+			.then(CommandSign.getSubCommand())
 			.executes((sender, args) -> { sender.sendMessage(fullDescription); return 1; })
 			.register();
 

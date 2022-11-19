@@ -16,10 +16,10 @@ import net.md_5.bungee.api.chat.ComponentBuilder;
 public class CommandChatAdmin extends Base {
 	private static Boolean enable_ac_command = false; // /ac message
 	private static String chat_prefix = "!"; // !message
-	private static String chat_send_permission = "minitools.admin_chat.send"; // Permission to send a message with the chat prefix
+	private static String chat_send_permission = "minitools.admin_chat.sendprefix"; // Permission to send a message with the chat prefix
 	private static String message_prefix = "&8[&4Admin&8] &7%player%&8: &7";
 	private static String message_suffix = "";
-	private final static String description = "Envoi des messages aux admins (joueurs Op ou permission minitools.admin_chat)";
+	private final static String description = "Envoi des messages aux admins (joueurs Op ou permission minitools.admin_chat.receive)";
 
 	private static ArgumentTree createAdminChatArgument() {
 		return new ChatArgument("message")
@@ -60,7 +60,7 @@ public class CommandChatAdmin extends Base {
 		// Send a message to all online players
 		int sent_count = Bukkit.getOnlinePlayers()
 					 .stream()
-					 .filter(player -> player.hasPermission("minitools.admin_chat"))
+					 .filter(player -> player.hasPermission("minitools.admin_chat.receive"))
 					 .map(player -> { player.spigot().sendMessage(message); return player; })
 					 .collect(java.util.stream.Collectors.toList())
 					 .size();

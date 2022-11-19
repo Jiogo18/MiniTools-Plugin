@@ -1,9 +1,9 @@
 
 # Config for the Admin Chat
-# To receive the messages you have to be Op or have the permission minitools.admin_chat
+# To receive the messages you have to be Op or have the permission minitools.admin_chat.receive
 admin_chat:
   enable_ac_command: true # /ac message, You need to restart/reload the server to apply the changes (perm minitools.admin_chat.ac)
   chat_prefix: '!' # !message
-  chat_send_permission: minitools.admin_chat.send # Permission required to use the chat_prefix
+  chat_send_permission: minitools.admin_chat.sendprefix # Permission required to use the chat_prefix
   message_prefix: '&8[&4Admin&8] &7%player%&8: &7'
   message_suffix: ''

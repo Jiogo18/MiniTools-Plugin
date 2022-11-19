@@ -5,3 +5,37 @@ author: Jarven
 api-version: 1.16
 depend:
   - CommandAPI
+
+permissions:
+  minitools.command:
+    description: "Allow to use the command"
+    default: op
+
+  # Admin Chat command
+  minitools.admin_chat.sendprefix:
+    description: "Allow to use the chat_prefix (in config.yml) to send in the admin chat"
+    default: op
+  minitools.admin_chat.ac:
+    description: "Allow to use the /ac command"
+    default: op
+  minitools.admin_chat.receive:
+    description: "Receive the admin chat messages"
+    default: op
+
+  # Give command
+  minitools.give.default:
+    description: "Allow to use the /mt give command"
+    default: true
+  minitools.give.forbidden_stuff:
+    description: "Allow to use the /mt give command with forbidden stuff"
+    default: op
+  minitools.give.diamond_stuff:
+    description: "Allow to use the /mt give command with diamond stuff"
+    default: op
+  minitools.give.example_stuff:
+    description: "Allow to use the /mt give command with example stuff"
+    default: op
+
+  minitools.sign.edit:
+    description: "Allow to edit a sign by clicking on it with another sign"
+    default: op

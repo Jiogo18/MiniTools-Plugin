@@ -58,7 +58,7 @@ custom_give:
 
   forbidden_stuff:
     enabled: false # disable the whole forbidden_stuff section
-    permission: "mt.give.forbidden_stuff"
+    permission: "minitools.give.forbidden_stuff"
     items:
       - material: DIAMOND_SWORD
         enchants:
