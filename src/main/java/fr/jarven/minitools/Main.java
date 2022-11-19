@@ -9,6 +9,7 @@ import fr.jarven.minitools.commands.MyCommands;
 import fr.jarven.minitools.listeners.CommandsListeners;
 import fr.jarven.minitools.listeners.InventoryListeners;
 import fr.jarven.minitools.listeners.SignListener;
+import fr.jarven.minitools.tasks.DayTask;
 import fr.jarven.minitools.tasks.SaveTask;
 
 public class Main extends JavaPlugin {
@@ -29,12 +30,14 @@ public class Main extends JavaPlugin {
 		getServer().getPluginManager().registerEvents(new CommandsListeners(), this);
 		getServer().getPluginManager().registerEvents(new InventoryListeners(), this);
 		SaveTask.start();
+		DayTask.start();
 	}
 
 	@Override
 	public void onDisable() {
 		MyCommands.onDisable();
 		SaveTask.onDisable();
+		DayTask.onDisable();
 	}
 
 	public static Plugin getInstance() {

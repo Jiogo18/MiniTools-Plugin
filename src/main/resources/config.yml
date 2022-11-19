@@ -7,3 +7,10 @@ admin_chat:
   chat_send_permission: minitools.admin_chat.sendprefix # Permission required to use the chat_prefix
   message_prefix: '&8[&4Admin&8] &7%player%&8: &7'
   message_suffix: ''
+
+day-message:
+  enabled: true
+  delay: 86400 # 1 day (in seconds, min 1 but not recommended)
+  message: '&6Bonjour, nous sommes le %date%'
+  message-on-disable: '&6Au revoir, nous sommes le %date%'
+  date-format: 'yyyy-MM-dd HH:mm:ss'
