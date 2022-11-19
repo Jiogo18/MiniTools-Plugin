@@ -43,7 +43,7 @@ public class DayTask implements Runnable {
 		}
 		boolean enabled = Main.getInstance().getConfig().getBoolean("day-message.enabled");
 		if (enabled) {
-			int delay = Main.getInstance().getConfig().getInt("day-message.delay");
+			int delay = Main.getInstance().getConfig().getInt("day-message.delay") * 20;
 			if (delay < 1) {
 				delay = 1;
 			}
