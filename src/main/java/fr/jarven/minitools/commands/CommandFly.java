@@ -13,7 +13,7 @@ public class CommandFly extends Base {
 						    .then(executePlayer(literal("0.1"), (player, args) -> player.setFlySpeed(0.1f)))
 						    .then(executePlayer(literal("0.2"), (player, args) -> player.setFlySpeed(0.2f)))
 						    .then(executePlayer(literal("1"), (player, args) -> player.setFlySpeed(1.0f)))
-						    .then(executePlayer(new FloatArgument("speed"), (player, args) -> player.setFlySpeed((float) args.get("speed"))));
+						    .then(executePlayer(new FloatArgument("speed", 0, 1), (player, args) -> player.setFlySpeed((float) args.get("speed"))));
 		return executePlayer(
 			literal("fly")
 				.then(executePlayer(literal("on"), (player, args) -> setFlying(player, true)))

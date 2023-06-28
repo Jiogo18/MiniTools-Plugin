@@ -230,6 +230,7 @@ public class CommandSign extends Base {
 					boolean wallSign = blockData instanceof WallSign;
 
 					String[] lines = sign.getLines();
+					DyeColor color = sign.getColor();
 
 					material = SignWoodArgument.getMaterial(args, "wood", wallSign);
 					block.setType(material);
@@ -252,6 +253,8 @@ public class CommandSign extends Base {
 					for (int i = 0; i < lines.length; i++) {
 						sign.setLine(i, lines[i]);
 					}
+					sign.setColor(color);
+
 					sign.update();
 					sender.sendMessage("Type de bois du panneau changé pour " + material);
 					return 1;
