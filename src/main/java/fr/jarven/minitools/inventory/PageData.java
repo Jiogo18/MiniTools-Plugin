@@ -6,7 +6,7 @@ import org.bukkit.inventory.ItemStack;
 import java.util.List;
 import java.util.Map;
 
-import fr.jarven.minitools.commands.CommandGive;
+import fr.jarven.minitools.utils.CustomItemStack;
 
 public class PageData implements ConfigurationSerializable {
 	public boolean locked;
@@ -42,7 +42,7 @@ public class PageData implements ConfigurationSerializable {
 		d.locked = (boolean) map.get("locked");
 		@SuppressWarnings("unchecked")
 		List<Object> listOfItems = (List<Object>) map.get("items");
-		d.items = listOfItems != null ? listOfItems.stream().map(i -> CommandGive.loadItemStack(i)).toArray(ItemStack[] ::new) : null;
+		d.items = listOfItems != null ? listOfItems.stream().map(CustomItemStack::fromObject).toArray(ItemStack[] ::new) : null;
 
 		return d;
 	}

@@ -1,9 +1,12 @@
 package fr.jarven.minitools.commands;
 
+import org.bukkit.plugin.java.JavaPlugin;
+
 import dev.jorel.commandapi.CommandAPI;
+import dev.jorel.commandapi.CommandAPIBukkitConfig;
 import dev.jorel.commandapi.CommandTree;
 
-public class MyCommands extends Base {
+public class MyCommands {
 	private MyCommands() {
 	}
 
@@ -24,21 +27,27 @@ public class MyCommands extends Base {
 			.withAliases("mt")
 			.withHelp("Plugin MiniTools par Jarven", fullDescription + "\n§6Aliases : mt")
 			.withRequirement((sender) -> sender.hasPermission("minitools.command"))
-			.then(CommandChatAdmin.getSubCommand())
-			.then(CommandFly.getSubCommand())
-			.then(CommandGive.getSubCommand())
-			.then(CommandGravity.getSubCommand())
-			.then(CommandHidden.getSubCommand())
-			.then(CommandReload.getSubCommand())
-			.then(CommandVanish.getSubCommand())
-			.then(CommandWhoAmI.getSubCommand())
-			.then(CommandWorld.getSubCommand())
-			.then(CommandInventory.getSubCommand())
-			.then(CommandSign.getSubCommand())
+			.then(new CommandChatAdmin().getSubCommand())
+			.then(new CommandFly().getSubCommand())
+			.then(new CommandGive().getSubCommand())
+			.then(new CommandGravity().getSubCommand())
+			.then(new CommandHidden().getSubCommand())
+			.then(new CommandReload().getSubCommand())
+			.then(new CommandVanish().getSubCommand())
+			.then(new CommandWhoAmI().getSubCommand())
+			.then(new CommandWorld().getSubCommand())
+			.then(new CommandInventory().getSubCommand())
+			.then(new CommandSign().getSubCommand())
 			.executes((sender, args) -> { sender.sendMessage(fullDescription); return 1; })
 			.register();
 
 		reload();
+	}
+
+	public static void onLoad(JavaPlugin plugin) {
+		if (!CommandAPI.isLoaded()) {
+			CommandAPI.onLoad(new CommandAPIBukkitConfig(plugin));
+		}
 	}
 
 	public static void onEnable() {

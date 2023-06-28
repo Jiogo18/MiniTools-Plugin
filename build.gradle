@@ -27,13 +27,13 @@ repositories {
 }
 
 dependencies {
-    implementation 'dev.jorel:commandapi-shade:8.5.0'
+    implementation 'dev.jorel:commandapi-bukkit-shade:9.0.3'
     implementation 'com.mojang:brigadier:1.0.17' // Paper 1.16.5 => brigadier 1.0.17
     compileOnly 'org.spigotmc:spigot-api:1.16.5-R0.1-SNAPSHOT'
 }
 
 group = 'fr.jarven'
-version = '1.0.3'
+version = '1.1.0'
 description = 'MiniTools'
 java.sourceCompatibility = JavaVersion.VERSION_1_8
 

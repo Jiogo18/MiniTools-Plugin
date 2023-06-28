@@ -2,10 +2,10 @@ package fr.jarven.minitools.commands;
 
 import org.bukkit.command.CommandSender;
 
-import dev.jorel.commandapi.ArgumentTree;
+import dev.jorel.commandapi.arguments.Argument;
 
 public class CommandWhoAmI extends Base {
-	public static ArgumentTree getSubCommand() {
+	public Argument<String> getSubCommand() {
 		return literal("whoami")
 			.executesNative((proxy, args) -> {
 				CommandSender puppet = proxy.getCallee();

@@ -12,12 +12,18 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import fr.jarven.minitools.Main;
-import fr.jarven.minitools.commands.CommandGive;
+import fr.jarven.minitools.utils.CustomItemStack;
 
 public class InventoryMenu {
 	private final String name;
 	private YamlConfiguration config;
+	/**
+	 * List of inventory holders
+	 */
 	private List<Holder> holders = new ArrayList<>();
+	/**
+	 * Items for the menu (bottom line)
+	 */
 	private List<ItemStack> menuItems = null;
 	private ItemStack menuItemEmpty = null;
 	private ItemStack menuItemLocked = null;
@@ -32,13 +38,19 @@ public class InventoryMenu {
 		this.name = name;
 	}
 
-	// Number of slots available in the inventory to store items
-	// The bottom line is reserved for the inventory menu
+	/**
+	 * Number of slots available in the inventory to store items
+	 * The bottom line is reserved for the inventory menu
+	 * @return Number of slots available in the inventory to store items
+	 */
 	public int getUsableSize() {
 		return 45;
 	}
 
-	// Number of slots of the inventory
+	/**
+	 * Number of slots of the inventory
+	 * @return Number of slots of the inventory
+	 */
 	public int getSize() {
 		return 54;
 	}
@@ -57,48 +69,46 @@ public class InventoryMenu {
 		config = YamlConfiguration.loadConfiguration(configFile);
 
 		// Load menu items
-		menuItems = CommandGive.loadItems(config.getList("menu_items"), true);
-		menuItemEmpty = CommandGive.loadItemStack(config.get("special_menu_items.empty"));
-		menuItemLocked = CommandGive.loadItemStack(config.get("special_menu_items.locked"));
-		menuItemUnlocked = CommandGive.loadItemStack(config.get("special_menu_items.unlocked"));
+		menuItems = CustomItemStack.fromListObject(config.getList("menu_items"), true);
+		menuItemEmpty = CustomItemStack.fromObject(config.get("special_menu_items.empty"));
+		menuItemLocked = CustomItemStack.fromObject(config.get("special_menu_items.locked"));
+		menuItemUnlocked = CustomItemStack.fromObject(config.get("special_menu_items.unlocked"));
 
 		// Load inventories
 		@SuppressWarnings("unchecked")
 		List<PageData> pagesData = (List<PageData>) config.getList("pages");
 		if (pagesData == null) {
 			int pageDefaultCount = config.getInt("pages_default_count", 1);
-			pagesData = new ArrayList<>();
-			if (holders.size() == 0) {
-				for (int i = 0; i < pageDefaultCount; i++) {
-					holders.add(new Holder(this, i + 1));
-				}
-			}
+			setHoldersCount(pageDefaultCount, false);
 		} else {
 			// Create holders / Add items to their inventories
-			if (holders != null) {
-				if (pagesData.size() < holders.size()) {
-					for (int i = pagesData.size(); i < holders.size(); i++) {
-						holders.get(i).closeAll();
-					}
-					holders.subList(pagesData.size(), holders.size()).clear();
-				} else if (pagesData.size() > holders.size()) {
-					for (int i = holders.size(); i < pagesData.size(); i++) {
-						holders.add(new Holder(this, i + 1));
-					}
-				}
-			} else {
-				holders = new ArrayList<>();
-				for (int i = 0; i < pagesData.size(); i++) {
-					holders.add(new Holder(this, i + 1));
-				}
-			}
+			setHoldersCount(pagesData.size(), true);
 			for (int i = 0; i < holders.size(); i++) {
+				// Fill inventories with pages data
 				if (pagesData.get(i) != null) pagesData.get(i).apply(holders.get(i));
 			}
 		}
 
 		dirty = false;
 		if (!exists) setDirty(); // If didn't exist, set dirty to save it with intentories
+	}
+
+	private void setHoldersCount(int count, boolean canRemoveHolders) {
+		if (count < 1) count = 1;
+		if (count > holders.size()) {
+			// Not enough inventories, create new ones
+			for (int i = holders.size(); i < count; i++) {
+				holders.add(new Holder(this, i + 1));
+			}
+		} else if (count < holders.size()) {
+			// Too many inventories, remove the last ones
+			if (canRemoveHolders) {
+				for (int i = holders.size() - 1; i >= count; i--) {
+					holders.get(i).closeAll();
+					holders.remove(i);
+				}
+			}
+		}
 	}
 
 	public void save() {
@@ -143,10 +153,10 @@ public class InventoryMenu {
 		if (index < 0 || index >= menuItems.size()) return null;
 		ItemStack item = menuItems.get(index);
 		switch (index) {
-			case 0: // First
+			case 0: // Left slot
 				if (page == 1 || item == null)
 					return menuItemEmpty; // No previous page
-				else if (item != null) {
+				else {
 					item = item.clone();
 					item.setAmount(page - 1);
 					ItemMeta meta = item.getItemMeta();
@@ -155,14 +165,14 @@ public class InventoryMenu {
 					return item;
 				}
 
-			case 4:
+			case 4: // Middle slot
 				if (holder.isLocked()) {
 					return menuItemLocked;
 				} else {
 					return menuItemUnlocked;
 				}
 
-			case 8: // Last
+			case 8: // Right slot
 				if (page == holders.size() || item == null)
 					return menuItemEmpty; // No next page
 				else {
@@ -173,10 +183,10 @@ public class InventoryMenu {
 					item.setItemMeta(meta);
 					return item;
 				}
-
-			default:
-				return item == null ? menuItemEmpty : item;
 		}
+
+		// Other slots
+		return item == null ? menuItemEmpty : item;
 	}
 
 	public void updateInventoryMenu(Holder holder) {

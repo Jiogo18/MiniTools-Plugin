@@ -2,10 +2,10 @@ package fr.jarven.minitools.commands;
 
 import org.bukkit.entity.Entity;
 
-import dev.jorel.commandapi.ArgumentTree;
+import dev.jorel.commandapi.arguments.Argument;
 
 public class CommandGravity extends Base {
-	public static ArgumentTree getSubCommand() {
+	public Argument<String> getSubCommand() {
 		return executeEntity(literal("gravity")
 					     .then(executeEntity(literal("on"), (entity, args) -> entity.setGravity(true)))
 					     .then(executeEntity(literal("off"), (entity, args) -> entity.setGravity(false)))

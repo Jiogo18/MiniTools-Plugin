@@ -3,9 +3,10 @@ package fr.jarven.minitools.commands;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.HumanEntity;
 
-import dev.jorel.commandapi.ArgumentTree;
+import dev.jorel.commandapi.arguments.Argument;
 import dev.jorel.commandapi.arguments.ArgumentSuggestions;
 import dev.jorel.commandapi.arguments.IntegerArgument;
+import dev.jorel.commandapi.executors.CommandArguments;
 import dev.jorel.commandapi.wrappers.NativeProxyCommandSender;
 import fr.jarven.minitools.inventory.InventoryMenu;
 
@@ -13,8 +14,8 @@ import fr.jarven.minitools.inventory.InventoryMenu;
 public class CommandInventory extends Base {
 	public static InventoryMenu inventoryMenu;
 
-	public static ArgumentTree getSubCommand() {
-		ArgumentSuggestions suggestExistingPage = (info, builder) -> {
+	public Argument<String> getSubCommand() {
+		ArgumentSuggestions<CommandSender> suggestExistingPage = (info, builder) -> {
 			String current = info.currentArg();
 			for (int i = 0; i < inventoryMenu.getPageCount(); i++) {
 				if (Integer.toString(i + 1).startsWith(current)) {
@@ -23,23 +24,31 @@ public class CommandInventory extends Base {
 			}
 			return builder.buildFuture();
 		};
-		ArgumentSuggestions suggestNextPage = (info, builder) -> {
+		ArgumentSuggestions<CommandSender> suggestNextPage = (info, builder) -> {
 			return builder.suggest(inventoryMenu.getPageCount() + 1).buildFuture();
 		};
 
 		return executeHumanProxy(
 			literal("inventory")
-				.then(executeHumanProxy(new IntegerArgument("page").includeSuggestions(suggestExistingPage), (proxy, args) -> openInventory(proxy, (int) args[0])))
+				.then(executeHumanProxy(
+					new IntegerArgument("page").includeSuggestions(suggestExistingPage),
+					CommandInventory::openInventory))
 				.then(literal("add_page")
-						.then(new IntegerArgument("page").includeSuggestions(suggestNextPage).executes((sender, args) -> { return addPage(sender, (int) args[0]); }))
-						.executes((sender, args) -> { return addPage(sender, inventoryMenu.getPageCount() + 1); }))
+						.then(
+							new IntegerArgument("page")
+								.includeSuggestions(suggestNextPage)
+								.executes(CommandInventory::addPage))
+						.executes(CommandInventory::addPage))
 				.then(literal("remove_page")
-						.then(new IntegerArgument("page").includeSuggestions(suggestExistingPage).executes((sender, args) -> { return removePage(sender, (int) args[0]); }))
-						.executes((sender, args) -> { return removePage(sender, inventoryMenu.getPageCount()); })),
-			(proxy, args) -> openInventory(proxy, 1));
+						.then(new IntegerArgument("page")
+								.includeSuggestions(suggestExistingPage)
+								.executes(CommandInventory::removePage))
+						.executes(CommandInventory::removePage)),
+			CommandInventory::openInventory);
 	}
 
-	public static void openInventory(NativeProxyCommandSender proxy, int page) {
+	public static void openInventory(NativeProxyCommandSender proxy, CommandArguments args) {
+		int page = (int) args.getOptional("page").orElse(1);
 		HumanEntity player = (HumanEntity) proxy.getCallee();
 		boolean open = inventoryMenu.open(player, page);
 		if (!areCallerCalleeTheSame(proxy)) {
@@ -57,7 +66,8 @@ public class CommandInventory extends Base {
 		}
 	}
 
-	public static int addPage(CommandSender sender, int page) {
+	public static int addPage(CommandSender sender, CommandArguments args) {
+		int page = (int) args.getOptional("page").orElse(inventoryMenu.getPageCount() + 1);
 		page = Math.max(1, Math.min(page, inventoryMenu.getPageCount() + 1));
 		int index = page - 1;
 		boolean insert = index < inventoryMenu.getPageCount();
@@ -80,7 +90,8 @@ public class CommandInventory extends Base {
 		}
 	}
 
-	public static int removePage(CommandSender sender, int page) {
+	public static int removePage(CommandSender sender, CommandArguments args) {
+		int page = (int) args.getOptional("page").orElse(inventoryMenu.getPageCount());
 		if (page < 1 || page > inventoryMenu.getPageCount()) {
 			sender.sendMessage("Cette page n'existe pas");
 			return 0;

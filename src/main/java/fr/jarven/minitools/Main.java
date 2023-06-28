@@ -19,7 +19,7 @@ public class Main extends JavaPlugin {
 	@Override
 	public void onLoad() {
 		instance = this;
-
+		MyCommands.onLoad(this);
 		saveDefaultConfig();
 	}
 

@@ -2,10 +2,10 @@ package fr.jarven.minitools.commands;
 
 import org.bukkit.entity.Player;
 
-import dev.jorel.commandapi.ArgumentTree;
+import dev.jorel.commandapi.arguments.Argument;
 
 public class CommandVanish extends Base {
-	public static ArgumentTree getSubCommand() {
+	public Argument<String> getSubCommand() {
 		return executePlayer(literal("vanish")
 					     .then(executePlayer(literal("on"), (player, args) -> player.setInvisible(true)))
 					     .then(executePlayer(literal("off"), (player, args) -> player.setInvisible(false)))

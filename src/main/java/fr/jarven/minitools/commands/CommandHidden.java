@@ -7,8 +7,7 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
 
-import dev.jorel.commandapi.ArgumentTree;
-import dev.jorel.commandapi.arguments.EntitySelector;
+import dev.jorel.commandapi.arguments.Argument;
 import dev.jorel.commandapi.arguments.EntitySelectorArgument;
 import fr.jarven.minitools.Main;
 
@@ -16,7 +15,7 @@ public class CommandHidden extends Base {
 	public static final Set<UUID> hiddenPlayers = new HashSet<>();
 	public static final Set<UUID> permanentHiddenPlayers = new HashSet<>();
 
-	public static ArgumentTree getSubCommand() {
+	public Argument<String> getSubCommand() {
 		return literal("hidden")
 			.then(executePlayerProxy(literal("on"), (proxy, args) -> {
 				Player playerToHide = (Player) proxy.getCallee();
@@ -39,30 +38,30 @@ public class CommandHidden extends Base {
 					proxy.getCaller().sendMessage("§a" + playerToHide.getName() + " est désormais masqué de façon permanente.");
 				}
 			}))
-			.then(literal("i_cant_see").then(executePlayer(new EntitySelectorArgument<Collection<Player>>("players_who_should_be_hidden_to_me", EntitySelector.MANY_PLAYERS), (sender, args) -> {
+			.then(literal("i_cant_see").then(executePlayer(new EntitySelectorArgument.ManyPlayers("players_who_should_be_hidden_to_me"), (sender, args) -> {
 				@SuppressWarnings("unchecked")
-				Collection<Player> playersToHide = (Collection<Player>) args[0];
+				Collection<Player> playersToHide = (Collection<Player>) args.get("players_who_should_be_hidden_to_me");
 				for (Player playerToHide : playersToHide) {
 					sender.hidePlayer(Main.getInstance(), playerToHide);
 				}
 			})))
-			.then(literal("i_can_see").then(executePlayer(new EntitySelectorArgument<Collection<Player>>("players_who_should_be_shown_to_me", EntitySelector.MANY_PLAYERS), (sender, args) -> {
+			.then(literal("i_can_see").then(executePlayer(new EntitySelectorArgument.ManyPlayers("players_who_should_be_shown_to_me"), (sender, args) -> {
 				@SuppressWarnings("unchecked")
-				Collection<Player> playersToShow = (Collection<Player>) args[0];
+				Collection<Player> playersToShow = (Collection<Player>) args.get("players_who_should_be_shown_to_me");
 				for (Player playerToShow : playersToShow) {
 					sender.showPlayer(Main.getInstance(), playerToShow);
 				}
 			})))
-			.then(literal("i_am_invisible_to").then(executePlayer(new EntitySelectorArgument<Collection<Player>>("players_who_wont_see_you", EntitySelector.MANY_PLAYERS), (sender, args) -> {
+			.then(literal("i_am_invisible_to").then(executePlayer(new EntitySelectorArgument.ManyPlayers("players_who_wont_see_you"), (sender, args) -> {
 				@SuppressWarnings("unchecked")
-				Collection<Player> playersToHide = (Collection<Player>) args[0];
+				Collection<Player> playersToHide = (Collection<Player>) args.get("players_who_wont_see_you");
 				for (Player playerWhoWontSeeYou : playersToHide) {
 					playerWhoWontSeeYou.hidePlayer(Main.getInstance(), sender);
 				}
 			})))
-			.then(literal("i_am_visible_to").then(executePlayer(new EntitySelectorArgument<Collection<Player>>("players_who_will_see_you", EntitySelector.MANY_PLAYERS), (sender, args) -> {
+			.then(literal("i_am_visible_to").then(executePlayer(new EntitySelectorArgument.ManyPlayers("players_who_will_see_you"), (sender, args) -> {
 				@SuppressWarnings("unchecked")
-				Collection<Player> playersToShow = (Collection<Player>) args[0];
+				Collection<Player> playersToShow = (Collection<Player>) args.get("players_who_will_see_you");
 				for (Player playerWhoWillShowYou : playersToShow) {
 					playerWhoWillShowYou.showPlayer(Main.getInstance(), sender);
 				}

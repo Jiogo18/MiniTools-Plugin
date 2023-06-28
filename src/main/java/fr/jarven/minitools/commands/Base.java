@@ -1,6 +1,7 @@
 package fr.jarven.minitools.commands;
 
 import org.bukkit.Bukkit;
+import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.HumanEntity;
 import org.bukkit.entity.Player;
@@ -8,12 +9,17 @@ import org.bukkit.entity.Player;
 import java.util.Optional;
 import java.util.function.BiConsumer;
 
-import dev.jorel.commandapi.ArgumentTree;
+import dev.jorel.commandapi.arguments.Argument;
 import dev.jorel.commandapi.arguments.ArgumentSuggestions;
 import dev.jorel.commandapi.arguments.LiteralArgument;
+import dev.jorel.commandapi.executors.CommandArguments;
 import dev.jorel.commandapi.wrappers.NativeProxyCommandSender;
 
-public class Base {
+public abstract class Base {
+	protected Base() {}
+
+	public abstract Argument<String> getSubCommand();
+
 	public static LiteralArgument literal(String name) {
 		return new LiteralArgument(name);
 	}
@@ -45,7 +51,7 @@ public class Base {
 		}
 	}
 
-	public static ArgumentTree executePlayerProxy(ArgumentTree arg, BiConsumer<NativeProxyCommandSender, Object[]> action) {
+	public static <T> Argument<T> executePlayerProxy(Argument<T> arg, BiConsumer<NativeProxyCommandSender, CommandArguments> action) {
 		return arg
 			.executesNative((proxy, args) -> {
 				Optional<Player> player = getPlayer(proxy);
@@ -58,7 +64,7 @@ public class Base {
 			});
 	}
 
-	public static ArgumentTree executeHumanProxy(ArgumentTree arg, BiConsumer<NativeProxyCommandSender, Object[]> action) {
+	public static <T> Argument<T> executeHumanProxy(Argument<T> arg, BiConsumer<NativeProxyCommandSender, CommandArguments> action) {
 		return arg
 			.executesNative((proxy, args) -> {
 				Optional<HumanEntity> player = getHuman(proxy);
@@ -71,11 +77,11 @@ public class Base {
 			});
 	}
 
-	public static ArgumentTree executePlayer(ArgumentTree arg, BiConsumer<Player, Object[]> action) {
+	public static <T> Argument<T> executePlayer(Argument<T> arg, BiConsumer<Player, CommandArguments> action) {
 		return executePlayerProxy(arg, (proxy, args) -> action.accept((Player) proxy.getCallee(), args));
 	}
 
-	public static ArgumentTree executeEntityProxy(ArgumentTree arg, BiConsumer<NativeProxyCommandSender, Object[]> action) {
+	public static <T> Argument<T> executeEntityProxy(Argument<T> arg, BiConsumer<NativeProxyCommandSender, CommandArguments> action) {
 		return arg
 			.executesNative((proxy, args) -> {
 				Optional<Entity> entity = getEntity(proxy);
@@ -94,7 +100,7 @@ public class Base {
 		return ((Entity) proxy.getCaller()).getUniqueId().equals(((Entity) proxy.getCallee()).getUniqueId());
 	}
 
-	public static ArgumentTree executeEntity(ArgumentTree arg, BiConsumer<Entity, Object[]> action) {
+	public static <T> Argument<T> executeEntity(Argument<T> arg, BiConsumer<Entity, CommandArguments> action) {
 		return executeEntityProxy(arg, (proxy, args) -> action.accept((Entity) proxy.getCallee(), args));
 	}
 
@@ -102,7 +108,7 @@ public class Base {
 		return Bukkit.getOnlinePlayers().stream().filter(p -> !p.getUniqueId().equals(playerToExclude.getUniqueId())).toArray(Player[] ::new);
 	}
 
-	public static ArgumentSuggestions suggestArray(String[] suggestions) {
+	public static ArgumentSuggestions<CommandSender> suggestArray(String[] suggestions) {
 		return (info, builder) -> {
 			String current = info.currentArg().toLowerCase();
 			for (String suggestion : suggestions) {
@@ -115,7 +121,7 @@ public class Base {
 		};
 	}
 
-	public static ArgumentSuggestions suggestSome(String... suggestions) {
+	public static ArgumentSuggestions<CommandSender> suggestSome(String... suggestions) {
 		return suggestArray(suggestions);
 	}
 }

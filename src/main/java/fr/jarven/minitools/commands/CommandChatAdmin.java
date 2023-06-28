@@ -5,8 +5,8 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 
-import dev.jorel.commandapi.ArgumentTree;
 import dev.jorel.commandapi.CommandTree;
+import dev.jorel.commandapi.arguments.Argument;
 import dev.jorel.commandapi.arguments.ChatArgument;
 import fr.jarven.minitools.Main;
 import net.md_5.bungee.api.ChatColor;
@@ -19,17 +19,17 @@ public class CommandChatAdmin extends Base {
 	private static String chat_send_permission = "minitools.admin_chat.sendprefix"; // Permission to send a message with the chat prefix
 	private static String message_prefix = "&8[&4Admin&8] &7%player%&8: &7";
 	private static String message_suffix = "";
-	private final static String description = "Envoi des messages aux admins (joueurs Op ou permission minitools.admin_chat.receive)";
+	private static final String DESCRIPTION = "Envoi des messages aux admins (joueurs Op ou permission minitools.admin_chat.receive)";
 
-	private static ArgumentTree createAdminChatArgument() {
+	private static Argument<BaseComponent[]> createAdminChatArgument() {
 		return new ChatArgument("message")
-			.executes((sender, args) -> { return sendMessage(sender, (BaseComponent[]) args[0]); });
+			.executes((sender, args) -> { return sendMessage(sender, (BaseComponent[]) args.get("message")); });
 	}
 
-	public static ArgumentTree getSubCommand() {
+	public Argument<String> getSubCommand() {
 		return literal("admin_chat")
 			.then(createAdminChatArgument())
-			.executes((sender, args) -> { sender.sendMessage(description); return 1; });
+			.executes((sender, args) -> { sender.sendMessage(DESCRIPTION); return 1; });
 	}
 
 	public static void onLoad() {
@@ -50,7 +50,7 @@ public class CommandChatAdmin extends Base {
 					.withShortDescription("Commande Admin Chat du Plugin MiniTools")
 					.withRequirement((sender) -> sender.hasPermission("minitools.admin_chat.ac"))
 					.then(createAdminChatArgument())
-					.executes((sender, args) -> { sender.sendMessage(description); return 1; })
+					.executes((sender, args) -> { sender.sendMessage(DESCRIPTION); return 1; })
 					.register();
 			}
 		}

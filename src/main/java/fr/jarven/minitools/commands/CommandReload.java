@@ -1,9 +1,9 @@
 package fr.jarven.minitools.commands;
 
-import dev.jorel.commandapi.ArgumentTree;
+import dev.jorel.commandapi.arguments.Argument;
 
 public class CommandReload extends Base {
-	public static ArgumentTree getSubCommand() {
+	public Argument<String> getSubCommand() {
 		return literal("reload")
 			.executes((sender, args) -> {
 				sender.sendMessage("Reloading...");
