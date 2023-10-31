@@ -1,9 +1,6 @@
 package fr.jarven.minitools.commands;
 
-import org.bukkit.plugin.java.JavaPlugin;
-
 import dev.jorel.commandapi.CommandAPI;
-import dev.jorel.commandapi.CommandAPIBukkitConfig;
 import dev.jorel.commandapi.CommandTree;
 
 public class MyCommands {
@@ -26,7 +23,7 @@ public class MyCommands {
 		new CommandTree("minitools")
 			.withAliases("mt")
 			.withHelp("Plugin MiniTools par Jarven", fullDescription + "\n§6Aliases : mt")
-			.withRequirement((sender) -> sender.hasPermission("minitools.command"))
+			.withRequirement(sender -> sender.hasPermission("minitools.command"))
 			.then(new CommandChatAdmin().getSubCommand())
 			.then(new CommandFly().getSubCommand())
 			.then(new CommandGive().getSubCommand())
@@ -43,12 +40,6 @@ public class MyCommands {
 			.register();
 
 		reload();
-	}
-
-	public static void onLoad(JavaPlugin plugin) {
-		if (!CommandAPI.isLoaded()) {
-			CommandAPI.onLoad(new CommandAPIBukkitConfig(plugin));
-		}
 	}
 
 	public static void onEnable() {

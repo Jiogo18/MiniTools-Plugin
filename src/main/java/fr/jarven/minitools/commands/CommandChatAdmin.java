@@ -14,7 +14,7 @@ import net.md_5.bungee.api.chat.BaseComponent;
 import net.md_5.bungee.api.chat.ComponentBuilder;
 
 public class CommandChatAdmin extends Base {
-	private static Boolean enable_ac_command = false; // /ac message
+	private static boolean enableAdminChatCommand = false; // /ac message
 	private static String chat_prefix = "!"; // !message
 	private static String chat_send_permission = "minitools.admin_chat.sendprefix"; // Permission to send a message with the chat prefix
 	private static String message_prefix = "&8[&4Admin&8] &7%player%&8: &7";
@@ -33,22 +33,22 @@ public class CommandChatAdmin extends Base {
 	}
 
 	public static void onLoad() {
-		ConfigurationSection admin_chat = Main.getInstance().getConfig().getConfigurationSection("admin_chat");
-		boolean was_ac_command_enabled = enable_ac_command;
+		ConfigurationSection adminChat = Main.getInstance().getConfig().getConfigurationSection("admin_chat");
+		boolean wasAdminChatCommandEnabled = enableAdminChatCommand;
 
-		if (admin_chat != null) {
-			enable_ac_command = admin_chat.getBoolean("enable_ac_command", enable_ac_command);
-			chat_prefix = admin_chat.getString("chat_prefix", chat_prefix);
-			chat_send_permission = admin_chat.getString("chat_send_permission", chat_send_permission);
-			message_prefix = admin_chat.getString("message_prefix", message_prefix);
-			message_suffix = admin_chat.getString("message_suffix", message_suffix);
+		if (adminChat != null) {
+			enableAdminChatCommand = adminChat.getBoolean("enable_ac_command", enableAdminChatCommand);
+			chat_prefix = adminChat.getString("chat_prefix", chat_prefix);
+			chat_send_permission = adminChat.getString("chat_send_permission", chat_send_permission);
+			message_prefix = adminChat.getString("message_prefix", message_prefix);
+			message_suffix = adminChat.getString("message_suffix", message_suffix);
 		}
 
-		if (was_ac_command_enabled != enable_ac_command) {
-			if (enable_ac_command) {
+		if (wasAdminChatCommandEnabled != enableAdminChatCommand) {
+			if (enableAdminChatCommand) {
 				new CommandTree("ac")
 					.withShortDescription("Commande Admin Chat du Plugin MiniTools")
-					.withRequirement((sender) -> sender.hasPermission("minitools.admin_chat.ac"))
+					.withRequirement(sender -> sender.hasPermission("minitools.admin_chat.ac"))
 					.then(createAdminChatArgument())
 					.executes((sender, args) -> { sender.sendMessage(DESCRIPTION); return 1; })
 					.register();
@@ -58,13 +58,12 @@ public class CommandChatAdmin extends Base {
 
 	private static int sendToEveryone(BaseComponent[] message) {
 		// Send a message to all online players
-		int sent_count = Bukkit.getOnlinePlayers()
-					 .stream()
-					 .filter(player -> player.hasPermission("minitools.admin_chat.receive"))
-					 .map(player -> { player.spigot().sendMessage(message); return player; })
-					 .collect(java.util.stream.Collectors.toList())
-					 .size();
-		return sent_count;
+		return Bukkit.getOnlinePlayers()
+			.stream()
+			.filter(player -> player.hasPermission("minitools.admin_chat.receive"))
+			.map(player -> { player.spigot().sendMessage(message); return player; })
+			.collect(java.util.stream.Collectors.toList())
+			.size();
 	}
 
 	private static int sendMessage(CommandSender sender, BaseComponent[] base) {
