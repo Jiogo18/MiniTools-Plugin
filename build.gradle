@@ -28,8 +28,8 @@ repositories {
 
 dependencies {
     implementation 'dev.jorel:commandapi-bukkit-shade:9.2.0'
-    implementation 'com.mojang:brigadier:1.0.17'
-    compileOnly 'org.spigotmc:spigot-api:1.19.4-R0.1-SNAPSHOT'
+    implementation 'com.mojang:brigadier:1.0.17' // Paper 1.16.5 => brigadier 1.0.17
+    compileOnly 'org.spigotmc:spigot-api:1.16.5-R0.1-SNAPSHOT'
 }
 
 group = 'fr.jarven'

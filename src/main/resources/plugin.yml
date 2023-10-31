@@ -2,8 +2,8 @@ name: MiniTools
 main: fr.jarven.minitools.Main
 version: 1.1.0
 author: Jarven
-api: [1.19.4]
-api-version: 1.19
+api: [1.16.5, 1.19.4]
+api-version: 1.16
 depend:
   - CommandAPI
 
