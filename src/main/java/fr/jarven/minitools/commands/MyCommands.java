@@ -38,6 +38,7 @@ public class MyCommands {
 			.then(new CommandWorld().getSubCommand())
 			.then(new CommandInventory().getSubCommand())
 			.then(new CommandSign().getSubCommand())
+			.then(new CommandAlias().getSubCommand())
 			.executes((sender, args) -> { sender.sendMessage(fullDescription); return 1; })
 			.register();
 
@@ -58,11 +59,13 @@ public class MyCommands {
 		CommandGive.onLoad();
 		CommandInventory.onLoad();
 		CommandChatAdmin.onLoad();
+		CommandAlias.onLoad();
 	}
 
 	public static void onDisable() {
 		CommandAPI.unregister("minitools");
 		CommandAPI.unregister("mt");
 		CommandAPI.unregister("ac");
+		CommandAlias.onDisable();
 	}
 }

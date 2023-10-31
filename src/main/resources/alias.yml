@@ -1,0 +1,6 @@
+aliases:
+  minitools-alias: # name of your alias
+    command: "minitools alias" # the command to execute
+    permission: "minitools.alias.use" # not required, this is a permission for the alias only, if you don't have permission of the command (i.e. /minitools) the execution will fail
+    override: false # default is false, if true, it will override the existing command
+    checkCommand: true # default is true, if true, it will check if the command exists
