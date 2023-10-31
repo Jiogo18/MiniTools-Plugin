@@ -36,6 +36,7 @@ public class MyCommands {
 			.then(new CommandInventory().getSubCommand())
 			.then(new CommandSign().getSubCommand())
 			.then(new CommandAlias().getSubCommand())
+			.then(new CommandSpeed().getSubCommand())
 			.executes((sender, args) -> { sender.sendMessage(fullDescription); return 1; })
 			.register();
 
