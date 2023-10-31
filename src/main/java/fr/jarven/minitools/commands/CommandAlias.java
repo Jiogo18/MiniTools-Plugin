@@ -4,21 +4,48 @@ import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;
 
 import java.io.File;
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Optional;
 import java.util.Set;
 
 import dev.jorel.commandapi.CommandAPI;
 import dev.jorel.commandapi.CommandTree;
-import dev.jorel.commandapi.RegisteredCommand;
 import dev.jorel.commandapi.arguments.Argument;
+import dev.jorel.commandapi.arguments.GreedyStringArgument;
+import dev.jorel.commandapi.arguments.PlayerArgument;
+import dev.jorel.commandapi.arguments.StringArgument;
 import fr.jarven.minitools.Main;
 
 public class CommandAlias extends Base {
 	private static final String ALIAS_FILE = "alias.yml";
-	private static Set<String> aliasesKeys = new HashSet<>();
+	private static Set<String> aliasesRegistered = new HashSet<>();
+	private static Set<String> allAliasesRegisteredByMiniTools = new HashSet<>();
+	private static Set<String> commandAlreadyExist = new HashSet<>();
+
+	enum ArgType {
+		STRING("string"),
+		TEXT("text"),
+		PLAYER("player");
+
+		private final String name;
+
+		private ArgType(String name) {
+			this.name = name;
+		}
+
+		public String getName() {
+			return name;
+		}
+
+		public static ArgType fromString(String name) {
+			for (ArgType type : ArgType.values()) {
+				if (type.getName().equalsIgnoreCase(name)) {
+					return type;
+				}
+			}
+			return null;
+		}
+	}
 
 	public static class Alias {
 		private String name;
@@ -26,13 +53,17 @@ public class CommandAlias extends Base {
 		private String permission;
 		private boolean override;
 		private boolean checkCommand;
+		private List<String> otherAliases;
+		private List<ArgType> args;
 
-		public Alias(String name, String command, String permission, boolean override, boolean checkCommand) {
+		public Alias(String name, String command, String permission, boolean override, boolean checkCommand, List<String> otherAliases, List<ArgType> args) {
 			this.name = name;
 			this.command = command;
 			this.permission = permission;
 			this.override = override;
 			this.checkCommand = checkCommand;
+			this.otherAliases = otherAliases;
+			this.args = args;
 		}
 
 		public String getName() {
@@ -58,10 +89,19 @@ public class CommandAlias extends Base {
 		public boolean checkCommand() {
 			return checkCommand;
 		}
+
+		public List<String> getOtherAliases() {
+			return otherAliases;
+		}
+
+		public List<ArgType> getArgs() {
+			return args;
+		}
 	}
 
 	private static void loadAliases() {
 		unloadAliases();
+		Main.LOGGER.info("Loading aliases...");
 
 		File file = new File(Main.getInstance().getDataFolder(), ALIAS_FILE);
 		if (!file.exists()) {
@@ -73,8 +113,7 @@ public class CommandAlias extends Base {
 		ConfigurationSection aliasesSection = aliasConfig.getConfigurationSection("aliases");
 		if (aliasesSection == null) return;
 
-		aliasesKeys = aliasesSection.getKeys(false);
-		List<Alias> aliases = new ArrayList<>();
+		Set<String> aliasesKeys = aliasesSection.getKeys(false);
 		for (String aliasName : aliasesKeys) {
 			ConfigurationSection aliasSection = aliasesSection.getConfigurationSection(aliasName);
 			if (aliasSection == null) continue;
@@ -83,60 +122,118 @@ public class CommandAlias extends Base {
 			String permission = aliasSection.getString("permission", "");
 			boolean override = aliasSection.getBoolean("override", false);
 			boolean checkCommand = aliasSection.getBoolean("checkCommand", true);
+			List<String> otherAliases = aliasSection.getStringList("otherAliases");
+			List<ArgType> args = aliasSection.getStringList("args").stream().map(ArgType::fromString).toList();
 
-			Alias alias = new Alias(aliasName, command, permission, override, checkCommand);
-			aliases.add(alias);
+			Alias alias = new Alias(aliasName, command, permission, override, checkCommand, otherAliases, args);
+			addAlias(alias);
 		}
+	}
 
-		aliases.forEach(CommandAlias::addAlias);
+	/**
+	 * getRegisteredCommands keep track of all registered commands, even if they are unregistered
+	 */
+	private static boolean isCommandAlreadyRegistered(String commandName) {
+		return CommandAPI.getRegisteredCommands()
+			.stream()
+			.anyMatch(command -> command.commandName().equals(commandName));
+	}
+
+	private static boolean canRegisterAlias(String aliasName, boolean canOverride) {
+		if (allAliasesRegisteredByMiniTools.contains(aliasName)) {
+			// Alias registered by MiniTools, we can safely override. If it's not what you want just reload the server.
+
+			if (commandAlreadyExist.contains(aliasName) && !canOverride) {
+				// The command existed before MiniTools
+				// Then MiniTools override it
+				// And now you want to load it with override: false
+				// => we override it again
+
+				Main.LOGGER.warning("Alias " + aliasName + " already registered by another plugin and next by MiniTools => overriding again. This can append if you changed the override from true to false. If you expected to use the command from the other plugin, please reload the server.");
+			}
+			return true;
+		}
+		if (commandAlreadyExist.contains(aliasName) && !canOverride) {
+			return false; // Alias already registered by another plugin, we can't override.
+		}
+		return true;
 	}
 
 	private static boolean addAlias(Alias alias) {
 		// Register with CommandAPI
-		Optional<RegisteredCommand> cmd;
-		if (alias.noOverrideIfExist()) {
-			cmd = CommandAPI.getRegisteredCommands()
-				      .stream()
-				      .filter(command -> command.commandName().equals(alias.getName()))
-				      .findAny();
-			if (cmd.isPresent()) {
-				Main.LOGGER.warning("Alias " + alias.getName() + " already registered, you can force it with override: true.");
-				return false;
+
+		if (!commandAlreadyExist.contains(alias.getName()) && !allAliasesRegisteredByMiniTools.contains(alias.getName())) {
+			// If not registered in one or the other => first time we load it,
+			// => we check if it's registered by another plugin
+			if (isCommandAlreadyRegistered(alias.getName())) {
+				commandAlreadyExist.add(alias.getName());
 			}
+		}
+
+		if (!canRegisterAlias(alias.getName(), alias.getOverride())) {
+			Main.LOGGER.warning("Alias " + alias.getName() + " already registered, you can force it with override: true.");
+			return false;
 		}
 
 		if (alias.checkCommand()) {
 			String commandName = alias.getCommand().split(" ")[0];
-			cmd = CommandAPI.getRegisteredCommands()
-				      .stream()
-				      .filter(command -> command.commandName().equals(commandName))
-				      .findAny();
-			if (!cmd.isPresent()) {
+			boolean cmdExist = isCommandAlreadyRegistered(commandName);
+			if (!cmdExist) {
 				Main.LOGGER.warning("Alias " + alias.getName() + " : command " + commandName + " not found.");
 				return false;
 			}
 		}
 
-		CommandTree aliasCmd = new CommandTree(alias.getName());
-		if (!alias.getPermission().isEmpty()) {
-			aliasCmd.withPermission(alias.getPermission());
-		}
-		aliasCmd.executesPlayer((sender, args) -> sender.performCommand(alias.getCommand()) ? 1 : 0)
+		CommandTree aliasCmd = buildCommand(alias);
+		aliasCmd
+			.executesPlayer((sender, args) -> sender.performCommand(alias.getCommand()) ? 1 : 0)
 			.register();
 
-		Main.LOGGER.info("Alias " + alias.getName() + " registered.");
+		aliasesRegistered.add(alias.getName());
+		allAliasesRegisteredByMiniTools.add(alias.getName());
 		return true;
 	}
 
+	private static CommandTree buildCommand(Alias alias) {
+		CommandTree cmd = new CommandTree(alias.getName())
+					  .withShortDescription("Alias for " + alias.getCommand());
+		if (!alias.getPermission().isEmpty()) {
+			cmd.withPermission(alias.getPermission());
+		}
+		if (!alias.getOtherAliases().isEmpty()) {
+			cmd.withAliases(alias.getOtherAliases().toArray(new String[0]));
+		}
+
+		buildWithArguments(cmd, alias);
+		return cmd;
+	}
+
+	private static void buildWithArguments(CommandTree cmd, Alias alias) {
+		for (ArgType arg : alias.getArgs()) {
+			switch (arg) {
+				case STRING:
+					cmd.then(new StringArgument("string")
+							 .executesPlayer((sender, args) -> sender.performCommand(alias.getCommand() + " " + args.get("string")) ? 1 : 0));
+					break;
+				case TEXT:
+					cmd.then(new GreedyStringArgument("text")
+							 .executesPlayer((sender, args) -> sender.performCommand(alias.getCommand() + " " + args.get("text")) ? 1 : 0));
+					break;
+				case PLAYER:
+					cmd.then(new PlayerArgument("player")
+							 .executesPlayer((sender, args) -> sender.performCommand(alias.getCommand() + " " + args.get("player")) ? 1 : 0));
+					break;
+			}
+		}
+	}
+
 	private static void unloadAliases() {
-		aliasesKeys.forEach(CommandAPI::unregister);
-		aliasesKeys.clear();
+		aliasesRegistered.forEach(cmd -> CommandAPI.unregister(cmd, true));
+		aliasesRegistered.clear();
+		Main.LOGGER.info("Aliases unloaded.");
 	}
 
 	public static void onLoad() {
-		if (!aliasesKeys.isEmpty()) {
-			unloadAliases();
-		}
 		loadAliases();
 	}
 
@@ -149,7 +246,7 @@ public class CommandAlias extends Base {
 		return literal("alias")
 			.executes((sender, args) -> {
 				// List registered aliases
-				sender.sendMessage("Liste des alias enregistrés :\n" + String.join(", ", aliasesKeys));
+				sender.sendMessage("Liste des alias enregistrés :\n" + String.join(", ", aliasesRegistered));
 				return 1;
 			});
 	}

@@ -1,6 +1,12 @@
 aliases:
   minitools-alias: # name of your alias
     command: "minitools alias" # the command to execute
-    permission: "minitools.alias.use" # not required, this is a permission for the alias only, if you don't have permission of the command (i.e. /minitools) the execution will fail
+    permission: "minitools.alias.test" # not required, this is a permission for the alias only, if you don't have permission of the command (i.e. /minitools) the execution will fail
     override: false # default is false, if true, it will override the existing command
     checkCommand: true # default is true, if true, it will check if the command exists
+  ac:
+    command: minitools admin_chat
+    permission: minitools.admin_chat.ac
+    override: false
+    args: # possible values : string, text, player
+      - text # (for now the command will have the format /ac <text>, if you add player if will add another command /ac <player>)

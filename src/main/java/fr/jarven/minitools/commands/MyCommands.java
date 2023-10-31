@@ -56,7 +56,6 @@ public class MyCommands {
 	public static void onDisable() {
 		CommandAPI.unregister("minitools");
 		CommandAPI.unregister("mt");
-		CommandAPI.unregister("ac");
 		CommandAlias.onDisable();
 	}
 }
