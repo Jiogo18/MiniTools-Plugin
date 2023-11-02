@@ -42,7 +42,6 @@ player_menu:
     - NAME_TAG_VISIBLE
     - INVULNERABLE
     - GLOWING
-    - SILENT
 
 name_tag_hidden:
   team: name_tag_hidden

@@ -27,6 +27,7 @@ public class CommandsListeners implements Listener {
 			}
 		}
 		if (CommandHidden.permanentHiddenPlayers.contains(player.getUniqueId())) {
+			event.setJoinMessage(null);
 			CommandHidden.hidePlayerToAll(player); // Hide me if I am "permanent" hidden
 		}
 	}
@@ -38,6 +39,9 @@ public class CommandsListeners implements Listener {
 	public void onQuit(org.bukkit.event.player.PlayerQuitEvent event) {
 		CommandHidden.hiddenPlayers.remove(event.getPlayer().getUniqueId());
 		// No need to call showPlayer because it is temporary
+		if (CommandHidden.permanentHiddenPlayers.contains(event.getPlayer().getUniqueId())) {
+			event.setQuitMessage(null);
+		}
 	}
 
 	/**

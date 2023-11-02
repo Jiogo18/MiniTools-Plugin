@@ -27,7 +27,6 @@ public enum PlayerMenuAction {
 	NAME_TAG_VISIBLE(Material.NAME_TAG, CommandNameVisible::isNameTagVisible, CommandNameVisible::changeNameTagVisibility),
 	INVULNERABLE(Material.SHIELD, Player::isInvulnerable, Player::setInvulnerable),
 	GLOWING(Material.GLOWSTONE_DUST, Player::isGlowing, Player::setGlowing),
-	SILENT(Material.BELL, Player::isSilent, Player::setSilent),
 	;
 
 	private final Material material;
