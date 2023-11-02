@@ -39,7 +39,10 @@ player_menu:
     - HIDDEN
     - HIDDEN_PERMANENT
     - SLEEPING_IGNORED
-    - DISPLAY_NAME
+    - NAME_TAG_VISIBLE
     - INVULNERABLE
     - GLOWING
     - SILENT
+
+name_tag_hidden:
+  team: name_tag_hidden

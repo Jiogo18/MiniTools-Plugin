@@ -9,6 +9,7 @@ import java.util.function.BiConsumer;
 import java.util.function.Function;
 
 import fr.jarven.minitools.commands.CommandHidden;
+import fr.jarven.minitools.commands.CommandNameVisible;
 
 public enum PlayerMenuAction {
 	GRAVITY(Material.FEATHER, Player::hasGravity, Player::setGravity),
@@ -23,7 +24,7 @@ public enum PlayerMenuAction {
 	HIDDEN(Material.ENDER_EYE, CommandHidden::isHidden, (p, b) -> { if(Boolean.TRUE.equals(b)) CommandHidden.hidePlayerToAll(p); else CommandHidden.showPlayerToAll(p); }),
 	HIDDEN_PERMANENT(Material.ENDER_EYE, CommandHidden::isPermanentHidden, (p, b) -> { if(b == Boolean.TRUE) CommandHidden.permanentHidePlayerToAll(p); else CommandHidden.showPlayerToAll(p); }),
 	SLEEPING_IGNORED(Material.RED_BED, Player::isSleepingIgnored, Player::setSleepingIgnored),
-	DISPLAY_NAME(Material.NAME_TAG, Player::isCustomNameVisible, Player::setCustomNameVisible),
+	NAME_TAG_VISIBLE(Material.NAME_TAG, CommandNameVisible::isNameTagVisible, CommandNameVisible::changeNameTagVisibility),
 	INVULNERABLE(Material.SHIELD, Player::isInvulnerable, Player::setInvulnerable),
 	GLOWING(Material.GLOWSTONE_DUST, Player::isGlowing, Player::setGlowing),
 	SILENT(Material.BELL, Player::isSilent, Player::setSilent),

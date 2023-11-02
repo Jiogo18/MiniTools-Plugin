@@ -40,6 +40,7 @@ public class MyCommands {
 			.then(new CommandAlias().getSubCommand())
 			.then(new CommandSpeed().getSubCommand())
 			.then(new CommandPlayer().getSubCommand())
+			.then(new CommandNameVisible().getSubCommand())
 			.executesPlayer((sender, args) -> { if(!MTMenu.openMenu(sender)) { sender.sendMessage(fullDescription); } return 1; })
 			.executes((sender, args) -> { sender.sendMessage(fullDescription); return 1; })
 			.register();
@@ -49,6 +50,7 @@ public class MyCommands {
 
 	public static void onEnable() {
 		registerMiniTools();
+		CommandNameVisible.onLoad();
 	}
 
 	public static void reload() {
@@ -58,6 +60,7 @@ public class MyCommands {
 		CommandAlias.onLoad();
 		MTMenu.onLoad();
 		PlayerMenu.onLoad();
+		CommandNameVisible.onLoad();
 	}
 
 	public static void onDisable() {
