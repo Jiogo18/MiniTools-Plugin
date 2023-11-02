@@ -13,3 +13,14 @@ day-message:
   message: '&6Bonjour, nous sommes le %date%'
   message-on-disable: '&6Au revoir, nous sommes le %date%'
   date-format: 'yyyy-MM-dd HH:mm:ss'
+
+menu:
+  enabled: true
+  title: 'MiniTools Menu'
+  size: 27
+  items:
+    0:
+      item:
+        material: CHEST
+        display_name: '§rInventaire'
+      action: INVENTORY

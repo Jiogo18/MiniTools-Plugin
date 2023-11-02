@@ -57,7 +57,7 @@ public class Holder implements InventoryHolder {
 	}
 
 	public boolean isOpen() {
-		return inventory.getViewers().size() > 0;
+		return !inventory.getViewers().isEmpty();
 	}
 
 	public void setItem(int slot, ItemStack item, boolean byEvent) {

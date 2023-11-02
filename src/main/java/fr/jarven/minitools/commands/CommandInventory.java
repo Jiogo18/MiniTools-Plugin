@@ -2,17 +2,19 @@ package fr.jarven.minitools.commands;
 
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.HumanEntity;
+import org.bukkit.inventory.Inventory;
 
 import dev.jorel.commandapi.arguments.Argument;
 import dev.jorel.commandapi.arguments.ArgumentSuggestions;
 import dev.jorel.commandapi.arguments.IntegerArgument;
 import dev.jorel.commandapi.executors.CommandArguments;
 import dev.jorel.commandapi.wrappers.NativeProxyCommandSender;
+import fr.jarven.minitools.inventory.Holder;
 import fr.jarven.minitools.inventory.InventoryMenu;
 
 // Command for a permanent "inventory" (a shared enderchest) to store custom items
 public class CommandInventory extends Base {
-	public static InventoryMenu inventoryMenu;
+	private static InventoryMenu inventoryMenu;
 
 	public Argument<String> getSubCommand() {
 		ArgumentSuggestions<CommandSender> suggestExistingPage = (info, builder) -> {
@@ -66,6 +68,10 @@ public class CommandInventory extends Base {
 		}
 	}
 
+	public static boolean openInventory(HumanEntity player, int page) {
+		return inventoryMenu.open(player, page);
+	}
+
 	public static int addPage(CommandSender sender, CommandArguments args) {
 		int page = (int) args.getOptional("page").orElse(inventoryMenu.getPageCount() + 1);
 		page = Math.max(1, Math.min(page, inventoryMenu.getPageCount() + 1));
@@ -115,5 +121,13 @@ public class CommandInventory extends Base {
 
 	public static void onDisable() {
 		inventoryMenu.onDisable();
+	}
+
+	public static InventoryMenu getInventoryMenu() {
+		return inventoryMenu;
+	}
+
+	public static boolean isInventoryMenu(Inventory inventory) {
+		return inventory.getHolder() instanceof Holder && (inventoryMenu != null && inventoryMenu.isHolder(inventory));
 	}
 }

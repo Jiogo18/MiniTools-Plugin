@@ -14,7 +14,7 @@ public class SaveTask implements Runnable {
 	}
 
 	public static void saveNow() {
-		CommandInventory.inventoryMenu.save();
+		CommandInventory.getInventoryMenu().save();
 	}
 
 	public static void start() {
