@@ -1,4 +1,4 @@
-package fr.jarven.minitools.inventory;
+package fr.jarven.minitools.containers.inventory;
 
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.HumanEntity;
@@ -20,12 +20,12 @@ public class InventoryMenu {
 	/**
 	 * List of inventory holders
 	 */
-	private List<Holder> holders = new ArrayList<>();
+	private List<InventoryPage> holders = new ArrayList<>();
 	/**
 	 * Items for the menu (bottom line)
 	 */
 	private List<ItemStack> menuItems = null;
-	private ItemStack menuItemEmpty = null;
+	private MenuItem menuItemEmpty = null;
 	private ItemStack menuItemLocked = null;
 	private ItemStack menuItemUnlocked = null;
 	private boolean dirty = false;
@@ -70,7 +70,7 @@ public class InventoryMenu {
 
 		// Load menu items
 		menuItems = CustomItemStack.fromListObject(config.getList("menu_items"), true);
-		menuItemEmpty = CustomItemStack.fromObject(config.get("special_menu_items.empty"));
+		menuItemEmpty = new MenuItem(CustomItemStack.fromObject(config.get("special_menu_items.empty")), null);
 		menuItemLocked = CustomItemStack.fromObject(config.get("special_menu_items.locked"));
 		menuItemUnlocked = CustomItemStack.fromObject(config.get("special_menu_items.unlocked"));
 
@@ -98,7 +98,7 @@ public class InventoryMenu {
 		if (count > holders.size()) {
 			// Not enough inventories, create new ones
 			for (int i = holders.size(); i < count; i++) {
-				holders.add(new Holder(this, i + 1));
+				holders.add(new InventoryPage(this, i + 1));
 			}
 		} else if (count < holders.size()) {
 			// Too many inventories, remove the last ones
@@ -129,7 +129,7 @@ public class InventoryMenu {
 	}
 
 	public void onDisable() {
-		for (Holder holder : holders) {
+		for (InventoryPage holder : holders) {
 			holder.closeAll();
 		}
 		save();
@@ -139,9 +139,9 @@ public class InventoryMenu {
 	public boolean open(HumanEntity player, int page) {
 		int pageIndex = page - 1;
 		if (pageIndex < 0 || pageIndex >= holders.size()) return false;
-		Holder holder = holders.get(pageIndex);
+		InventoryPage holder = holders.get(pageIndex);
 		if (!holder.isLoaded()) return false;
-		holder.open(player);
+		holder.openInventory(player);
 		return true;
 	}
 
@@ -149,9 +149,10 @@ public class InventoryMenu {
 		return holders.stream().anyMatch(holder -> holder.getInventory().equals(inventory));
 	}
 
-	private ItemStack getMenuItem(int index, int page, Holder holder) {
+	private MenuItem getMenuItem(int index, int page, InventoryPage holder) {
 		if (index < 0 || index >= menuItems.size()) return null;
 		ItemStack item = menuItems.get(index);
+
 		switch (index) {
 			case 0: // Left slot
 				if (page == 1 || item == null)
@@ -162,14 +163,14 @@ public class InventoryMenu {
 					ItemMeta meta = item.getItemMeta();
 					meta.setDisplayName(meta.getDisplayName().replace("%page%", page - 1 + ""));
 					item.setItemMeta(meta);
-					return item;
+					return new MenuItem(item, event -> open(event.getWhoClicked(), page - 1));
 				}
 
 			case 4: // Middle slot
 				if (holder.isLocked()) {
-					return menuItemLocked;
+					return new MenuItem(menuItemLocked, event -> holder.setLocked(false));
 				} else {
-					return menuItemUnlocked;
+					return new MenuItem(menuItemUnlocked, event -> holder.setLocked(true));
 				}
 
 			case 8: // Right slot
@@ -181,22 +182,22 @@ public class InventoryMenu {
 					ItemMeta meta = item.getItemMeta();
 					meta.setDisplayName(meta.getDisplayName().replace("%page%", page + 1 + ""));
 					item.setItemMeta(meta);
-					return item;
+					return new MenuItem(item, event -> open(event.getWhoClicked(), page + 1));
 				}
 		}
 
 		// Other slots
-		return item == null ? menuItemEmpty : item;
+		return item == null ? menuItemEmpty : new MenuItem(item, null);
 	}
 
-	public void updateInventoryMenu(Holder holder) {
+	public void updateInventoryMenu(InventoryPage holder) {
 		if (menuItems == null) return;
 		int begin = getUsableSize();
 		int length = Math.min(menuItems.size(), getSize() - begin);
 		int pageIndex = holders.indexOf(holder);
 		for (int i = 0; i < length; i++) {
-			ItemStack item = getMenuItem(i, pageIndex + 1, holder);
-			holder.getInventory().setItem(i + begin, item);
+			MenuItem item = getMenuItem(i, pageIndex + 1, holder);
+			holder.setItem(i + begin, item);
 		}
 	}
 
@@ -213,7 +214,7 @@ public class InventoryMenu {
 		if (i < 0) return false;
 
 		// Add a new holder at the end
-		Holder holder = new Holder(this, holders.size() + 1);
+		InventoryPage holder = new InventoryPage(this, holders.size() + 1);
 		holders.add(holder);
 
 		if (append) {
@@ -226,7 +227,7 @@ public class InventoryMenu {
 		// Else, move the inventories between each holders
 		ItemStack[] previousContent = null; // the holder added will be empty
 		for (int j = i; j < holders.size(); j++) {
-			Holder current = holders.get(j);
+			InventoryPage current = holders.get(j);
 			ItemStack[] currentContents = current.getInventory().getContents().clone();
 			current.load(previousContent);
 			previousContent = currentContents;
@@ -247,9 +248,9 @@ public class InventoryMenu {
 
 		if (i < holders.size()) {
 			// Move the inventories between each holders
-			Holder previous = holders.get(i);
+			InventoryPage previous = holders.get(i);
 			for (int j = i; j < holders.size(); j++) {
-				Holder current = holders.get(j);
+				InventoryPage current = holders.get(j);
 				previous.load(current.getInventory().getContents().clone());
 				previous = current;
 			}

@@ -2,7 +2,7 @@ package fr.jarven.minitools.commands;
 
 import dev.jorel.commandapi.CommandAPI;
 import dev.jorel.commandapi.CommandTree;
-import fr.jarven.minitools.menu.MTMenu;
+import fr.jarven.minitools.containers.menu.MTMenu;
 
 public class MyCommands {
 	private MyCommands() {

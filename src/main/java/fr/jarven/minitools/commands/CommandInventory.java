@@ -9,8 +9,8 @@ import dev.jorel.commandapi.arguments.ArgumentSuggestions;
 import dev.jorel.commandapi.arguments.IntegerArgument;
 import dev.jorel.commandapi.executors.CommandArguments;
 import dev.jorel.commandapi.wrappers.NativeProxyCommandSender;
-import fr.jarven.minitools.inventory.Holder;
-import fr.jarven.minitools.inventory.InventoryMenu;
+import fr.jarven.minitools.containers.inventory.InventoryPage;
+import fr.jarven.minitools.containers.inventory.InventoryMenu;
 
 // Command for a permanent "inventory" (a shared enderchest) to store custom items
 public class CommandInventory extends Base {
@@ -128,6 +128,6 @@ public class CommandInventory extends Base {
 	}
 
 	public static boolean isInventoryMenu(Inventory inventory) {
-		return inventory.getHolder() instanceof Holder && (inventoryMenu != null && inventoryMenu.isHolder(inventory));
+		return inventory.getHolder() instanceof InventoryPage && (inventoryMenu != null && inventoryMenu.isHolder(inventory));
 	}
 }

@@ -1,4 +1,4 @@
-package fr.jarven.minitools.inventory;
+package fr.jarven.minitools.containers.inventory;
 
 import org.bukkit.configuration.serialization.ConfigurationSerializable;
 import org.bukkit.inventory.ItemStack;
@@ -14,12 +14,12 @@ public class PageData implements ConfigurationSerializable {
 
 	private PageData() {}
 
-	public PageData(Holder h) {
+	public PageData(InventoryPage h) {
 		this.items = h.getUsableInventory();
 		this.locked = h.isLocked();
 	}
 
-	public void apply(Holder h) {
+	public void apply(InventoryPage h) {
 		h.setLocked(this.locked);
 		h.load(this.items);
 	}

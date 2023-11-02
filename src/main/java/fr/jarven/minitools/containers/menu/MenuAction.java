@@ -1,4 +1,4 @@
-package fr.jarven.minitools.menu;
+package fr.jarven.minitools.containers.menu;
 
 import org.bukkit.entity.HumanEntity;
 

@@ -9,7 +9,6 @@ import fr.jarven.minitools.commands.MyCommands;
 import fr.jarven.minitools.listeners.CommandsListeners;
 import fr.jarven.minitools.listeners.InventoryListeners;
 import fr.jarven.minitools.listeners.SignListener;
-import fr.jarven.minitools.menu.MTMenu;
 import fr.jarven.minitools.tasks.DayTask;
 import fr.jarven.minitools.tasks.SaveTask;
 
