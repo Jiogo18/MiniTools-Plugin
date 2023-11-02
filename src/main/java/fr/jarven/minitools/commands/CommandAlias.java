@@ -21,6 +21,7 @@ public class CommandAlias extends Base {
 	private static Set<String> aliasesRegistered = new HashSet<>();
 	private static Set<String> allAliasesRegisteredByMiniTools = new HashSet<>();
 	private static Set<String> commandAlreadyExist = new HashSet<>();
+	private static boolean firstLoad = true;
 
 	enum ArgType {
 		STRING("string"),
@@ -100,8 +101,9 @@ public class CommandAlias extends Base {
 	}
 
 	private static void loadAliases() {
-		unloadAliases();
 		Main.LOGGER.info("Loading aliases...");
+		boolean warningConcurrentModificationSent = false;
+		int aliasesBefore = aliasesRegistered.size();
 
 		File file = new File(Main.getInstance().getDataFolder(), ALIAS_FILE);
 		if (!file.exists()) {
@@ -125,9 +127,18 @@ public class CommandAlias extends Base {
 			List<String> otherAliases = aliasSection.getStringList("otherAliases");
 			List<ArgType> args = aliasSection.getStringList("args").stream().map(ArgType::fromString).toList();
 
+			if (!firstLoad && !aliasesRegistered.contains(aliasName) && !warningConcurrentModificationSent) {
+				Main.LOGGER.warning("You may see a ConcurrentModificationException below, don't worry, this is because of a new alias registered by MiniTools");
+				warningConcurrentModificationSent = true;
+			}
+
 			Alias alias = new Alias(aliasName, command, permission, override, checkCommand, otherAliases, args);
 			addAlias(alias);
 		}
+
+		int aliasesNow = aliasesRegistered.size();
+		Main.LOGGER.info("Aliases loaded (" + (aliasesNow - aliasesBefore) + " new).");
+		firstLoad = false;
 	}
 
 	/**
@@ -228,7 +239,7 @@ public class CommandAlias extends Base {
 	}
 
 	private static void unloadAliases() {
-		aliasesRegistered.forEach(cmd -> CommandAPI.unregister(cmd, true));
+		aliasesRegistered.forEach(cmd -> CommandAPI.unregister(cmd));
 		aliasesRegistered.clear();
 		Main.LOGGER.info("Aliases unloaded.");
 	}

@@ -1,3 +1,5 @@
+# aliases can be added while the server is running, but you will get a warning in the console
+# aliases can't be removed while the server is running, you have to restart the server to remove an alias
 aliases:
   minitools-alias: # name of your alias
     command: "minitools alias" # the command to execute
