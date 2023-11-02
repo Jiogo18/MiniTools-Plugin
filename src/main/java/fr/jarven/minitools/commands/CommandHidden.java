@@ -106,4 +106,8 @@ public class CommandHidden extends Base {
 	public static boolean isHidden(Player player) {
 		return hiddenPlayers.contains(player.getUniqueId());
 	}
+
+	public static boolean isPermanentHidden(Player player) {
+		return permanentHiddenPlayers.contains(player.getUniqueId());
+	}
 }

@@ -9,7 +9,7 @@ import fr.jarven.minitools.containers.abs.MiniToolsHolder;
 public class MTMenu extends MiniToolsHolder {
 	private static MTMenu miniToolsMenu = null;
 
-	public MTMenu(String title, int size, MenuItem[] menuItems) {
+	public MTMenu(String title, int size, MTMenuItem[] menuItems) {
 		super(size, title, menuItems);
 	}
 
@@ -20,10 +20,10 @@ public class MTMenu extends MiniToolsHolder {
 		}
 		String title = config.getString("title");
 		int size = config.getInt("size");
-		MenuItem[] items = new MenuItem[size];
+		MTMenuItem[] items = new MTMenuItem[size];
 
 		for (int i = 0; i < size; i++) {
-			items[i] = MenuItem.fromConfig(config.getConfigurationSection("items." + i));
+			items[i] = MTMenuItem.fromConfig(config.getConfigurationSection("items." + i));
 		}
 
 		return new MTMenu(title, size, items);

@@ -10,16 +10,16 @@ import fr.jarven.minitools.containers.abs.MiniToolsHolder;
 import fr.jarven.minitools.containers.abs.MiniToolsItemStack;
 import fr.jarven.minitools.utils.CustomItemStack;
 
-public class MenuItem extends MiniToolsItemStack {
-	private MenuAction action;
+public class MTMenuItem extends MiniToolsItemStack {
+	private MTMenuAction action;
 	private ItemStack icon;
 
-	public MenuItem(MenuAction action, ItemStack icon) {
+	public MTMenuItem(MTMenuAction action, ItemStack icon) {
 		super(icon);
 		this.action = action;
 	}
 
-	public MenuAction getAction() {
+	public MTMenuAction getAction() {
 		return this.action;
 	}
 
@@ -27,13 +27,13 @@ public class MenuItem extends MiniToolsItemStack {
 		return this.icon;
 	}
 
-	public static MenuItem fromConfig(ConfigurationSection config) {
+	public static MTMenuItem fromConfig(ConfigurationSection config) {
 		if (config == null) return null;
-		MenuAction action = MenuAction.valueOf(config.getString("action"));
+		MTMenuAction action = MTMenuAction.valueOf(config.getString("action"));
 		ItemStack icon = CustomItemStack.fromObject(config.get("item"));
 		if (icon == null) Main.LOGGER.warning("Menu item icon is null");
 
-		return new MenuItem(action, icon);
+		return new MTMenuItem(action, icon);
 	}
 
 	@Override

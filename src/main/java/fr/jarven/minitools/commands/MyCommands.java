@@ -3,6 +3,7 @@ package fr.jarven.minitools.commands;
 import dev.jorel.commandapi.CommandAPI;
 import dev.jorel.commandapi.CommandTree;
 import fr.jarven.minitools.containers.menu.MTMenu;
+import fr.jarven.minitools.containers.player_menu.PlayerMenu;
 
 public class MyCommands {
 	private MyCommands() {
@@ -38,6 +39,7 @@ public class MyCommands {
 			.then(new CommandSign().getSubCommand())
 			.then(new CommandAlias().getSubCommand())
 			.then(new CommandSpeed().getSubCommand())
+			.then(new CommandPlayer().getSubCommand())
 			.executesPlayer((sender, args) -> { if(!MTMenu.openMenu(sender)) { sender.sendMessage(fullDescription); } return 1; })
 			.executes((sender, args) -> { sender.sendMessage(fullDescription); return 1; })
 			.register();
@@ -55,6 +57,7 @@ public class MyCommands {
 		CommandChatAdmin.onLoad();
 		CommandAlias.onLoad();
 		MTMenu.onLoad();
+		PlayerMenu.onLoad();
 	}
 
 	public static void onDisable() {
