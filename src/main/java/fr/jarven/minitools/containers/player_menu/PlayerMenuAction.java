@@ -17,7 +17,7 @@ public enum PlayerMenuAction {
 		if (Boolean.TRUE.equals(b)) p.setAllowFlight(true);
 		p.setFlying(b);
 		p.teleport(p.getLocation().add(0, 1e-6, 0));
-		if (Boolean.TRUE.equals(b)) PlayerMenu.open(p);
+		PlayerMenu.open(p);
 	}),
 	ALLOW_FLIGHT(Material.ELYTRA, Player::getAllowFlight, Player::setAllowFlight),
 	VANISH(Material.POTION, Player::isInvisible, Player::setInvisible),

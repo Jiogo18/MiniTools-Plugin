@@ -111,9 +111,11 @@ public class CommandAlias extends Base {
 		}
 
 		YamlConfiguration aliasConfig = YamlConfiguration.loadConfiguration(file);
-
 		ConfigurationSection aliasesSection = aliasConfig.getConfigurationSection("aliases");
-		if (aliasesSection == null) return;
+		if (aliasesSection == null) {
+			firstLoad = false;
+			return;
+		}
 
 		Set<String> aliasesKeys = aliasesSection.getKeys(false);
 		for (String aliasName : aliasesKeys) {
