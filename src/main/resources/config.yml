@@ -29,6 +29,16 @@ menu:
         material: PLAYER_HEAD
         display_name: '§rMenu joueur'
       action: PLAYER
+    2:
+      item:
+        material: END_PORTAL_FRAME
+        display_name: '§rMenu des warps'
+      action: WARPS
+    3:
+      item:
+        material: OAK_DOOR
+        display_name: '§rMenu des homes'
+      action: HOMES
 
 player_menu:
   actions: # Actions available in the player menu
