@@ -8,11 +8,18 @@ import java.util.Map;
 
 import fr.jarven.minitools.utils.CustomItemStack;
 
+/**
+ * Represents the data of an inventory page for IO operations only.
+ * Each instance is saved in the list 'pages' of the inventory.yml file.
+ */
 public class PageData implements ConfigurationSerializable {
-	public boolean locked;
-	public ItemStack[] items;
+	private final boolean locked;
+	private final ItemStack[] items;
 
-	private PageData() {}
+	private PageData(boolean locked, ItemStack[] items) {
+		this.locked = locked;
+		this.items = items;
+	}
 
 	public PageData(InventoryPage h) {
 		this.items = h.getUsableInventory();
@@ -37,13 +44,11 @@ public class PageData implements ConfigurationSerializable {
 	}
 
 	public static PageData deserialize(Map<String, Object> map) {
-		PageData d = new PageData();
-
-		d.locked = (boolean) map.get("locked");
+		boolean locked = (boolean) map.get("locked");
 		@SuppressWarnings("unchecked")
 		List<Object> listOfItems = (List<Object>) map.get("items");
-		d.items = listOfItems != null ? listOfItems.stream().map(CustomItemStack::fromObject).toArray(ItemStack[] ::new) : null;
+		ItemStack[] items = listOfItems != null ? listOfItems.stream().map(CustomItemStack::fromObject).toArray(ItemStack[] ::new) : null;
 
-		return d;
+		return new PageData(locked, items);
 	}
 }
