@@ -296,13 +296,13 @@ public class CommandSign extends Base {
 				.append(new TextComponent("\n "))
 				.append(
 					new ComponentBuilder("[Éditer]")
-						.color(ChatColor.GOLD)
+						.color(ChatColor.AQUA)
 						.event(new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, signCommand + " line " + line + " set " + decodeTextColor(sign.getLine(line - 1))))
 						.event(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new Text("Éditer le ligne " + line)))
 						.create())
 				.append(new TextComponent(" "))
 				.append(
-					new ComponentBuilder("[Colorer]")
+					new ComponentBuilder("[Couleur]")
 						.color(ChatColor.YELLOW)
 						.event(new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, signCommand + " line " + line + " color "))
 						.event(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new Text("Colorer la ligne " + line)))
@@ -319,7 +319,7 @@ public class CommandSign extends Base {
 					new ComponentBuilder("[Terminé]")
 						.color(ChatColor.GREEN)
 						.event(new ClickEvent(ClickEvent.Action.RUN_COMMAND, signCommand + " editor"))
-						.event(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new Text("Voir le résultat")))
+						.event(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new Text("Voir le résultat dans l'éditeur")))
 						.create());
 		player.spigot().sendMessage(builder.create());
 	}
@@ -342,6 +342,13 @@ public class CommandSign extends Base {
 		builder
 			.append(new TextComponent("\n "))
 			.append(
+				new ComponentBuilder("[Éditer]")
+					.color(ChatColor.AQUA)
+					.event(new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, signCommand + " set-text " + signText))
+					.event(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new Text("Éditer le texte u du panneau")))
+					.create())
+			.append(new TextComponent(" "))
+			.append(
 				new ComponentBuilder("[Couleur]")
 					.color(ChatColor.YELLOW)
 					.event(new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, signCommand + " set-color "))
@@ -358,7 +365,7 @@ public class CommandSign extends Base {
 			.append(
 				new ComponentBuilder("[Copier]")
 					.color(ChatColor.GREEN)
-					.event(new ClickEvent(ClickEvent.Action.COPY_TO_CLIPBOARD, signText))
+					.event(new ClickEvent(ClickEvent.Action.COPY_TO_CLIPBOARD, signText.replaceAll("\\n", "\n")))
 					.event(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new Text("Copier le texte du panneau")))
 					.create());
 		player.spigot().sendMessage(builder.create());
