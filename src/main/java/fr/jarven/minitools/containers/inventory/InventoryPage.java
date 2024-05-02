@@ -39,7 +39,7 @@ public class InventoryPage extends MiniToolsHolder {
 
 	@Override
 	public void setItem(int slot, ItemStack item, boolean byEvent) {
-		if (locked || slot < 0 || slot >= menu.getUsableSize()) return;
+		if (slot < 0 || slot >= menu.getUsableSize()) return;
 		usableInventory[slot] = item;
 		super.setItem(slot, item, byEvent);
 		menu.setDirty();
