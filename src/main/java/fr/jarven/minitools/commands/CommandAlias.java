@@ -197,6 +197,11 @@ public class CommandAlias extends Base {
 			}
 		}
 
+		// If not the first time we load it
+		if (allAliasesRegisteredByMiniTools.contains(alias.getName())) {
+			Main.LOGGER.warning("Registering alias " + alias.getName() + " again, CommandAPI won't be happy. Don't worry, it should be safe.");
+		}
+
 		CommandTree aliasCmd = buildCommand(alias);
 		aliasCmd
 			.executesPlayer((sender, args) -> sender.performCommand(alias.getCommand()) ? 1 : 0)
